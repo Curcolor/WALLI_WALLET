@@ -9,6 +9,7 @@ Walli es una aplicación web que permite a los usuarios realizar transferencias,
 - Frontend: HTML, CSS, JavaScript
 - Backend: Python, Flask
 - Base de Datos: MySQL
+- Entorno Virtual: Python
 
 ## 📦 Instalación
 
