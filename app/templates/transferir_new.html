@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALLI - Transferir</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/transferir.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='imgs/walli_logo.ico') }}">
+</head>
+<body>
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="robot-avatar">
+                <div class="robot-eyes"></div>
+            </div>
+            <h3 id="userName">{{ nombre_usuario }}</h3>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('viewpages.dashboard') }}">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ url_for('viewpages.depositar') }}">
+                <i class="fas fa-plus-circle"></i>
+                <span>Depositar</span>
+            </a>
+            <a href="{{ url_for('viewpages.retirar') }}">
+                <i class="fas fa-minus-circle"></i>
+                <span>Retirar</span>
+            </a>
+            <a href="#" class="active">
+                <i class="fas fa-paper-plane"></i>
+                <span>Transferir</span>
+            </a>
+            <a href="{{ url_for('viewpages.servicios') }}">
+                <i class="fas fa-file-invoice"></i>
+                <span>Servicios</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="logout-btn" href="{{ url_for('auth.logout') }}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="transfer-container">
+            <!-- Tarjeta de saldo -->
+            <div class="balance-card">
+                <div class="balance-header">
+                    <h2>Saldo Disponible</h2>
+                </div>
+                <div class="balance-amount">
+                    <span class="currency">$</span>
+                    <span id="balanceAmount">
+                        {% if saldo_actual is not none %}
+                            {{ "{:,.0f}".format(saldo_actual) }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <!-- Formulario de transferencia -->
+            <div class="transfer-card">
+                <div class="card-header">
+                    <div class="walli-icon">
+                        <div class="walli-eyes"></div>
+                    </div>
+                    <h2>Transferir</h2>
+                </div>
+
+                <form id="transferForm">
+                    <!-- Destinatario -->
+                    <div class="input-group">
+                        <label>Número de teléfono del destinatario</label>
+                        <div class="input-wrapper">
+                            <input type="tel" 
+                                   id="recipientAccount" 
+                                   placeholder="Número de teléfono"
+                                   pattern="[0-9]{10}"
+                                   required>
+                        </div>
+                        <small class="input-help">Ingresa el número de teléfono sin espacios ni caracteres especiales</small>
+                    </div>
+
+                    <!-- Monto -->
+                    <div class="input-group">
+                        <label>Monto</label>
+                        <div class="amount-wrapper">
+                            <span>$</span>
+                            <input type="number" 
+                                   id="transferAmount" 
+                                   placeholder="0" 
+                                   min="1000" 
+                                   step="1000" 
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="input-group">
+                        <label>Descripción</label>
+                        <div class="input-wrapper">
+                            <input type="text" 
+                                   id="transferDescription" 
+                                   placeholder="Agregar nota"
+                                   maxlength="50">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Transferir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de confirmación -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Confirmar Transferencia</h3>
+            
+            <div class="transfer-details">
+                <p>Cuenta destino: <span id="confirmRecipient"></span></p>
+                <p>Monto: <span id="confirmAmount"></span></p>
+                <p>Descripción: <span id="confirmDescription">-</span></p>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="cancelTransfer" class="cancel-btn">Cancelar</button>
+                <button id="confirmTransfer" class="confirm-btn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/transfer.js') }}"></script>
+</body>
+</html>

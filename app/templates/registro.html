@@ -1,0 +1,116 @@
+{% extends 'base.html' %} 
+{% block title %}Registro{% endblock %} 
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/registro.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="robot-logo">
+        <div class="robot-eyes"></div>
+    </div>
+    <h2>Registro de Cliente</h2>
+
+    <form method="POST" class="auth-form" action="{{ url_for('auth.registro') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.nombre.label }}
+            {{ form.nombre(class="form-control") }}
+            {% if form.nombre.errors %}
+                {% for error in form.nombre.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.apellido.label }}
+            {{ form.apellido(class="form-control") }}
+            {% if form.apellido.errors %}
+                {% for error in form.apellido.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.documento_identidad.label }}
+            {{ form.documento_identidad(class="form-control") }}
+            {% if form.documento_identidad.errors %}
+                {% for error in form.documento_identidad.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.correo_electronico.label }}
+            {{ form.correo_electronico(class="form-control") }}
+            {% if form.correo_electronico.errors %}
+                {% for error in form.correo_electronico.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.fecha_nacimiento.label }}
+            {{ form.fecha_nacimiento(class="form-control") }}
+            {% if form.fecha_nacimiento.errors %}
+                {% for error in form.fecha_nacimiento.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.tipo_cuenta.label }}
+            {{ form.tipo_cuenta(class="form-control") }}
+            {% if form.tipo_cuenta.errors %}
+                {% for error in form.tipo_cuenta.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.numero_telefono_ingreso.label }}
+            {{ form.numero_telefono_ingreso(class="form-control") }}
+            {% if form.numero_telefono_ingreso.errors %}
+                {% for error in form.numero_telefono_ingreso.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.clave_ingreso.label }}
+            {{ form.clave_ingreso(class="form-control") }}
+            {% if form.clave_ingreso.errors %}
+                {% for error in form.clave_ingreso.errors %}
+                    <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %} 
+
+        <button type="submit" class="btn btn-primary">Registrarse</button>
+    </form>
+
+    <div class="auth-links">
+        ¿Ya tienes una cuenta?
+        <a href="{{ url_for('auth.login') }}">Inicia sesión</a>
+    </div>
+</div>
+{% endblock %}

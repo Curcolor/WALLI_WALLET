@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALLI - {% block title %}{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='imgs/walli_logo.ico') }}">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="robot-avatar">
+                <div class="robot-eyes"></div>
+            </div>
+            <h3 id="userName">Bienvenido</h3>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="active">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="depositar.html">
+                <i class="fas fa-plus-circle"></i>
+                <span>Depositar</span>
+            </a>
+            <a href="retirar.html">
+                <i class="fas fa-minus-circle"></i>
+                <span>Retirar</span>
+            </a>
+            <a href="transferir.html">
+                <i class="fas fa-paper-plane"></i>
+                <span>Transferir</span>
+            </a>
+            <a href="servicios.html">
+                <i class="fas fa-file-invoice"></i>
+                <span>Servicios</span>
+            </a>
+            <a href="#" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </nav>
+    </aside>
+    {% endif %}
+
+    <!-- Contenido principal -->
+    {% block content %}{% endblock %}
+
+    <!-- Scripts -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

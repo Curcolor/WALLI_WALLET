@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALLI - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='imgs/walli_logo.ico') }}">
+</head>
+<body>
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="robot-avatar">
+                <div class="robot-eyes"></div>
+            </div>
+            <h3 id="userName">
+                Bienvenido <br>
+                {{ nombre_usuario }}
+            </h3>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="active">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ url_for('viewpages.depositar') }}">
+                <i class="fas fa-plus-circle"></i>
+                <span>Depositar</span>
+            </a>
+            <a href="{{ url_for('viewpages.retirar') }}">
+                <i class="fas fa-minus-circle"></i>
+                <span>Retirar</span>
+            </a>
+            <a href="{{ url_for('viewpages.transferir') }}">
+                <i class="fas fa-paper-plane"></i>
+                <span>Transferir</span>
+            </a>
+            <a href="{{ url_for('viewpages.servicios') }}">
+                <i class="fas fa-file-invoice"></i>
+                <span>Servicios</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="logout-btn" href="{{ url_for('auth.logout') }}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <!-- Sección superior -->
+        <div class="balance-card">
+            <div class="balance-header">
+                <h2>Saldo Disponible</h2>
+            </div>
+            <div class="balance-amount">
+                <span class="currency">$</span>
+                <span id="balanceAmount">
+                    {% if saldo_actual is not none %}
+                        {{ "{:,.0f}".format(saldo_actual) }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Acciones principales -->
+        <div class="main-actions">
+            <h3>Operaciones Disponibles</h3>
+            <div class="actions-grid">
+                <a class="action-card" href="{{ url_for('viewpages.depositar') }}">
+                    <i class="fas fa-plus-circle"></i>
+                    <h4>Depositar</h4>
+                    <p>Agregar dinero</p>
+                </a>
+                <a class="action-card" href="{{ url_for('viewpages.retirar') }}">
+                    <i class="fas fa-minus-circle"></i>
+                    <h4>Retirar</h4>
+                    <p>Retirar dinero</p>
+                </a>
+                <a class="action-card" href="{{ url_for('viewpages.transferir') }}">
+                    <i class="fas fa-paper-plane"></i>
+                    <h4>Transferir</h4>
+                    <p>Enviar dinero</p>
+                </a>
+                <a class="action-card" href="{{ url_for('viewpages.servicios') }}">
+                    <i class="fas fa-file-invoice"></i>
+                    <h4>Pagar Servicios</h4>
+                    <p>Servicios públicos</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Últimas transacciones -->
+        <div class="recent-transactions">
+            <h3>Últimas Transacciones</h3>
+            <div class="transactions-list" id="recentTransactions">
+                <!-- Las transacciones se cargarán dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para operaciones -->
+    <div class="modal" id="operationModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <form id="operationForm" onsubmit="handleOperation(event)">
+                <div class="form-group">
+                    <label>Monto</label>
+                    <div class="amount-input">
+                        <span>$</span>
+                        <input type="number" id="operationAmount" required min="1000">
+                    </div>
+                </div>
+                <div id="additionalFields">
+                    <!-- Campos adicionales según la operación -->
+                </div>
+                <button type="submit" class="submit-btn">Confirmar</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</html>

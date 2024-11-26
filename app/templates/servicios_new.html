@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - WALLI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/servicios.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="{{ url_for('static', filename='imgs/walli_logo.ico') }}">
+</head>
+<body>
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="robot-avatar">
+                <div class="robot-eyes"></div>
+            </div>
+            <h3 id="userName">{{ nombre_usuario }}</h3>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('viewpages.dashboard') }}">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ url_for('viewpages.depositar') }}">
+                <i class="fas fa-plus-circle"></i>
+                <span>Depositar</span>
+            </a>
+            <a href="{{ url_for('viewpages.retirar') }}">
+                <i class="fas fa-minus-circle"></i>
+                <span>Retirar</span>
+            </a>
+            <a href="{{ url_for('viewpages.transferir') }}">
+                <i class="fas fa-paper-plane"></i>
+                <span>Transferir</span>
+            </a>
+            <a href="#" class="active">
+                <i class="fas fa-file-invoice"></i>
+                <span>Servicios</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="logout-btn" href="{{ url_for('auth.logout') }}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="services-container">
+            <div class="balance-card">
+                <div class="balance-header">
+                    <h2>Saldo Disponible</h2>
+                </div>
+                <div class="balance-amount">
+                    <span class="currency">$</span>
+                    <span id="balanceAmount">
+                        {% if saldo_actual is not none %}
+                            {{ "{:,.0f}".format(saldo_actual) }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tarjeta de servicios -->
+            <div class="services-card">
+                <div class="card-header">
+                    <div class="walli-icon">
+                        <div class="walli-eyes"></div>
+                    </div>
+                    <h2>Pago de Servicios</h2>
+                </div>
+
+                <!-- Grid de servicios -->
+                <div class="services-grid">
+                    <a class="service-btn" href="{{ url_for('viewpages.pago_servicios') }}">
+                        <i class="fas fa-bolt"></i>
+                        <span>Electricidad</span>
+                    </a>
+                    <a class="service-btn" href="{{ url_for('viewpages.pago_servicios') }}">
+                        <i class="fas fa-tint"></i>
+                        <span>Agua</span>
+                    </a>
+                    <a class="service-btn" href="{{ url_for('viewpages.pago_servicios') }}">
+                        <i class="fas fa-phone"></i>
+                        <span>Teléfono</span>
+                    </a>
+                    <a class="service-btn" href="{{ url_for('viewpages.pago_servicios') }}">
+                        <i class="fas fa-wifi"></i>
+                        <span>Internet</span>
+                    </a>
+                    <a class="service-btn" href="{{ url_for('viewpages.pago_servicios') }}">
+                        <i class="fas fa-tv"></i>
+                        <span>Cable TV</span>
+                    </a>
+                    <a class="service-btn" href="{{ url_for('viewpages.pago_servicios') }}">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Celular</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
