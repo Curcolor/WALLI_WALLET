@@ -77,16 +77,21 @@
                 </div>
 
                 <form id="paymentForm">
-                    <!-- Número de referencia -->
+                    <!-- Campo oculto para el ID del servicio -->
+                    <input type="hidden" name="id_servicio" id="id_servicio" value="{{ servicio_id }}">
+
+                    <!-- Número de referencia visible -->
                     <div class="input-group">
                         <label>Número de Referencia</label>
                         <div class="input-wrapper">
                             <i class="fas fa-hashtag"></i>
                             <input type="text" 
-                                   name="id_servicio" 
-                                   id="id_servicio" 
+                                   name="numero_referencia" 
+                                   id="numero_referencia" 
                                    required 
-                                   placeholder="Ingresa el número de referencia">
+                                   value="{{ servicio_id }}"
+                                   readonly
+                                   placeholder="Número de referencia">
                         </div>
                     </div>
 

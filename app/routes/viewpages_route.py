@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, login_required, current_user
 from app.forms.auth_forms import LoginForm, RegistroForm
 from app.models import Cuenta, Cliente
@@ -30,6 +30,17 @@ def obtener_info_cuenta(id_cuenta):
             'nombre_usuario': 'Usuario',
             'saldo_actual': 0.0
         }
+    finally:
+        cursor.close()
+        conn.close()
+
+def obtener_saldo_actual(id_cuenta):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT saldo_actual FROM Cuentas WHERE id_cuenta = %s", (id_cuenta,))
+        resultado = cursor.fetchone()
+        return float(resultado['saldo_actual']) if resultado else 0.0
     finally:
         cursor.close()
         conn.close()
@@ -144,14 +155,15 @@ def servicios():
         flash('Error al cargar la página de servicios', 'error')
         return redirect(url_for('viewpages.dashboard'))
     
-@bp.route('/pago_servicios')
+@bp.route('/pago-servicios')
 @login_required
 def pago_servicios():
-    try:
-        info_cuenta = obtener_info_cuenta(current_user.id)
-        print("Info cuenta:", info_cuenta)  # Debug para ver qué datos llegan
-        return render_template('pago_servicios.html', **info_cuenta)
-    except Exception as e:
-        print(f"Error al cargar servicios: {str(e)}")
-        flash('Error al cargar la página de servicios', 'error')
-        return redirect(url_for('viewpages.dashboard'))
+    servicio_id = request.args.get('servicio_id', '')
+    
+    # Usar current_user en lugar de session
+    info_cuenta = obtener_info_cuenta(current_user.id)
+    
+    return render_template('pago_servicios.html',
+                         nombre_usuario=info_cuenta['nombre_usuario'],
+                         saldo_actual=info_cuenta['saldo_actual'],
+                         servicio_id=servicio_id)
