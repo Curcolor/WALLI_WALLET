@@ -82,7 +82,11 @@
                         <label>Número de Referencia</label>
                         <div class="input-wrapper">
                             <i class="fas fa-hashtag"></i>
-                            <input type="text" required placeholder="Ingresa el número de referencia">
+                            <input type="text" 
+                                   name="id_servicio" 
+                                   id="id_servicio" 
+                                   required 
+                                   placeholder="Ingresa el número de referencia">
                         </div>
                     </div>
 
@@ -105,41 +109,7 @@
         </div>
     </main>
 
-    <script>
-        // Obtener el tipo de servicio de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const serviceType = urlParams.get('service');
-        
-        // Actualizar título y icono según el servicio
-        function updateServiceInfo() {
-            const titleElement = document.getElementById('serviceTitle');
-            const icons = {
-                'electricity': ['Pago de Electricidad', 'fa-bolt'],
-                'water': ['Pago de Agua', 'fa-tint'],
-                'phone': ['Pago de Teléfono', 'fa-phone'],
-                'internet': ['Pago de Internet', 'fa-wifi'],
-                'tv': ['Pago de Cable TV', 'fa-tv'],
-                'mobile': ['Pago de Celular', 'fa-mobile-alt']
-            };
+    <script src="{{ url_for('static', filename='js/pago_servicios.js') }}"></script>
 
-            if (serviceType && icons[serviceType]) {
-                const [title, icon] = icons[serviceType];
-                titleElement.innerHTML = `<i class="fas ${icon}"></i> ${title}`;
-            }
-        }
-
-        // Manejar el pago
-        function handlePayment(event) {
-            event.preventDefault();
-            const amount = document.getElementById('paymentAmount').value;
-            
-            // Aquí iría la lógica de pago
-            alert(`Pago de $${amount} realizado con éxito`);
-            window.location.href = 'servicios.html';
-        }
-
-        // Inicializar
-        updateServiceInfo();
-    </script>
 </body>
 </html>

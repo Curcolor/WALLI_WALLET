@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template, session
+from flask import Blueprint, request, jsonify, session
 from app.models.pago_servicio import PagoServicio
 
 bp = Blueprint('pago_servicio', __name__, url_prefix='/api/pago-servicio')
@@ -16,24 +16,34 @@ def listar_pagos():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@bp.route('/crear', methods=['GET', 'POST'])
+@bp.route('/crear', methods=['POST'])
 def crear_pago():
-    if request.method == 'GET':
-        return render_template('pago_servicio/crear.html')
-        
-    # Si es POST
-    datos = request.get_json()
     try:
+        datos = request.get_json()
+        
+        # Validar que los datos necesarios estén presentes
+        if not all(key in datos for key in ['cuenta_id', 'servicio_id', 'monto']):
+            return jsonify({'error': 'Faltan datos requeridos'}), 400
+            
+        # Convertir el monto a float
+        try:
+            monto = float(datos['monto'])
+        except ValueError:
+            return jsonify({'error': 'El monto debe ser un número válido'}), 400
+
         pago_id = PagoServicio.crear_pago(
             cuenta_id=datos['cuenta_id'],
             servicio_id=datos['servicio_id'],
-            monto=datos['monto']
+            monto=monto
         )
+        
         return jsonify({
             'mensaje': 'Pago realizado exitosamente',
             'pago_id': pago_id
         }), 201
+        
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
     except Exception as e:
-        return jsonify({'error': 'Error al procesar el pago'}), 500 
+        print(f"Error en crear_pago: {str(e)}")  # Para debugging
+        return jsonify({'error': 'Error al procesar el pago'}), 500
