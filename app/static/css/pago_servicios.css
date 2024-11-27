@@ -1,0 +1,163 @@
+/* Contenedor principal */
+.payment-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Tarjeta de saldo */
+.balance-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    width: 100%;
+}
+
+.balance-title {
+    color: var(--walli-brown);
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+.balance-amount {
+    font-size: 2.5em;
+    color: var(--walli-brown);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.balance-amount .currency {
+    font-size: 0.8em;
+    opacity: 0.8;
+}
+
+/* Tarjeta de pago */
+.payment-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    width: var(--card-width);
+}
+
+/* Cabecera con muñeco */
+.card-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.walli-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--walli-brown);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    position: relative;
+    border: 3px solid var(--walli-orange);
+}
+
+.walli-eyes {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.walli-eyes::before,
+.walli-eyes::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: var(--walli-yellow);
+    border-radius: 50%;
+    animation: blink 3s infinite;
+}
+
+/* Campos de entrada */
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--walli-brown);
+    font-weight: bold;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #f5f5f5;
+    border: 2px solid var(--walli-orange);
+    border-radius: 10px;
+    height: 50px;
+    padding: 0 15px;
+}
+
+.input-wrapper i,
+.input-wrapper .currency {
+    color: var(--walli-brown);
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.input-wrapper input {
+    border: none;
+    background: none;
+    width: 100%;
+    height: 100%;
+    color: var(--walli-brown);
+    font-size: 16px;
+    outline: none;
+}
+
+/* Botón de pago */
+.submit-btn {
+    width: 100%;
+    height: 50px;
+    background: var(--walli-orange);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    background: var(--walli-brown);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .quick-amounts {
+        grid-template-columns: 1fr;
+    }
+
+    .balance-amount {
+        font-size: 2em;
+    }
+
+    .deposit-card {
+        padding: 20px;
+    }
+}
+
+@keyframes blink {
+    0%, 90%, 100% { opacity: 1; }
+    95% { opacity: 0.3; }
+}

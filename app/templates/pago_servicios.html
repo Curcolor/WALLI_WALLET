@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALLI - Pago de Servicios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pago_servicios.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="{{ url_for('static', filename='imgs/walli_logo.ico') }}">
+</head>
+<body>
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="robot-avatar">
+                <div class="robot-eyes"></div>
+            </div>
+            <h3 id="userName">
+                {{ nombre_usuario }}
+            </h3>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('viewpages.dashboard') }}">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ url_for('viewpages.depositar') }}">
+                <i class="fas fa-plus-circle"></i>
+                <span>Depositar</span>
+            </a>
+            <a href="{{ url_for('viewpages.retirar') }}">
+                <i class="fas fa-minus-circle"></i>
+                <span>Retirar</span>
+            </a>
+            <a href="{{ url_for('viewpages.transferir') }}">
+                <i class="fas fa-paper-plane"></i>
+                <span>Transferir</span>
+            </a>
+            <a href="#" class="active">
+                <i class="fas fa-file-invoice"></i>
+                <span>Servicios</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="logout-btn" href="{{ url_for('auth.logout') }}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="payment-container">
+            <!-- Tarjeta de saldo -->
+            <div class="balance-card">
+                <h2>Saldo Disponible</h2>
+                <div class="balance-amount">
+                    <span class="currency">$</span>
+                    <span id="currentBalance">
+                        {{ "{:,.0f}".format(saldo_actual) if saldo_actual is defined else "0" }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tarjeta de pago -->
+            <div class="payment-card">
+                <div class="card-header">
+                    <div class="walli-icon">
+                        <div class="walli-eyes"></div>
+                    </div>
+                    <h2>Pago de Servicios</h2>
+                </div>
+
+                <form id="paymentForm">
+                    <!-- Número de referencia -->
+                    <div class="input-group">
+                        <label>Número de Referencia</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-hashtag"></i>
+                            <input type="text" required placeholder="Ingresa el número de referencia">
+                        </div>
+                    </div>
+
+                    <!-- Monto -->
+                    <div class="input-group">
+                        <label>Monto a Pagar</label>
+                        <div class="input-wrapper">
+                            <span class="currency">$</span>
+                            <input type="number" required placeholder="0.00" min="1" step="0.01">
+                        </div>
+                    </div>
+
+                    <!-- Botón de pago -->
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check-circle"></i>
+                        Realizar Pago
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Obtener el tipo de servicio de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const serviceType = urlParams.get('service');
+        
+        // Actualizar título y icono según el servicio
+        function updateServiceInfo() {
+            const titleElement = document.getElementById('serviceTitle');
+            const icons = {
+                'electricity': ['Pago de Electricidad', 'fa-bolt'],
+                'water': ['Pago de Agua', 'fa-tint'],
+                'phone': ['Pago de Teléfono', 'fa-phone'],
+                'internet': ['Pago de Internet', 'fa-wifi'],
+                'tv': ['Pago de Cable TV', 'fa-tv'],
+                'mobile': ['Pago de Celular', 'fa-mobile-alt']
+            };
+
+            if (serviceType && icons[serviceType]) {
+                const [title, icon] = icons[serviceType];
+                titleElement.innerHTML = `<i class="fas ${icon}"></i> ${title}`;
+            }
+        }
+
+        // Manejar el pago
+        function handlePayment(event) {
+            event.preventDefault();
+            const amount = document.getElementById('paymentAmount').value;
+            
+            // Aquí iría la lógica de pago
+            alert(`Pago de $${amount} realizado con éxito`);
+            window.location.href = 'servicios.html';
+        }
+
+        // Inicializar
+        updateServiceInfo();
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Iniciar Sesión
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<form class="auth-form" method="POST" action="{{ url_for('auth.login') }}">
+    {{ form.hidden_tag() }}
+    <div class="robot-logo">
+        <div class="robot-eyes"></div>
+    </div>
+  
+    <h1>¡Bienvenido de nuevo!</h1>
+    
+    <div class="input-container">
+        <label>{{ form.numero_telefono_ingreso.label }}</label>
+        <div class="input-wrapper">
+            <i class="fas fa-phone"></i>
+            {{ form.numero_telefono_ingreso(class="form-control", placeholder="Ingrese su número de teléfono") }}
+        </div>
+        {% if form.numero_telefono_ingreso.errors %}
+            {% for error in form.numero_telefono_ingreso.errors %}
+                <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div class="input-container">
+        <label>{{ form.clave_ingreso.label }}</label>
+        <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            {{ form.clave_ingreso(class="form-control", placeholder="Ingrese su clave") }}
+        </div>
+        {% if form.clave_ingreso.errors %}
+            {% for error in form.clave_ingreso.errors %}
+                <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <button type="submit" class="submit-btn">
+        <i class="fas fa-sign-in-alt"></i>
+        Iniciar Sesión
+    </button>
+    
+    <a href="{{ url_for('auth.registro') }}" class="auth-link">
+        ¿No tienes cuenta? Regístrate aquí
+    </a>
+</form>
+{% endblock %} 
