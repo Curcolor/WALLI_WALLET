@@ -155,3 +155,10 @@ def pago_servicios():
         print(f"Error al cargar servicios: {str(e)}")
         flash('Error al cargar la página de servicios', 'error')
         return redirect(url_for('viewpages.dashboard'))
+
+
+@bp.route('/chatbot')
+@login_required
+def chatbot():
+    info_cuenta = obtener_info_cuenta(current_user.id)
+    return render_template('chatbot.html', **info_cuenta)
