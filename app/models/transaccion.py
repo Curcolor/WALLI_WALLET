@@ -17,8 +17,8 @@ class Transaccion:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        sql = """INSERT INTO Transacciones (cuenta_origen, cuenta_destino, monto, 
-                tipo, fecha, estado) VALUES (%s, %s, %s, %s, %s, %s)"""
+        sql = """INSERT INTO Transaccion (id_cuenta_origen, id_cuenta_envio, monto, 
+                fecha_transaccion, canal, estado) VALUES (%s, %s, %s, %s, %s, %s)"""
         valores = (cuenta_origen, cuenta_destino, monto, tipo, 
                   datetime.now(), 'completada')
         
@@ -33,6 +33,6 @@ class Transaccion:
     def obtener_transacciones_usuario(usuario_id):
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Transacciones WHERE cuenta_origen = %s", (usuario_id,))
+        cursor.execute("SELECT * FROM transaccion WHERE id_cuenta_origen = %s", (usuario_id,))
         transacciones = cursor.fetchall()
         return transacciones
