@@ -167,3 +167,8 @@ def pago_servicios():
                          nombre_usuario=info_cuenta['nombre_usuario'],
                          saldo_actual=info_cuenta['saldo_actual'],
                          servicio_id=servicio_id)
+@bp.route('/chatbot')
+@login_required
+def chatbot():
+    info_cuenta = obtener_info_cuenta(current_user.id)
+    return render_template('chatbot.html', **info_cuenta)

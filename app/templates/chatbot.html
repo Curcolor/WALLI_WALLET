@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALLI - Asistente Virtual</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='imgs/walli_logo.ico') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="robot-avatar">
+                <div class="robot-eyes"></div>
+            </div>
+            <h3 id="userName">{{ nombre_usuario }}</h3>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('viewpages.dashboard') }}">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ url_for('viewpages.depositar') }}">
+                <i class="fas fa-plus-circle"></i>
+                <span>Depositar</span>
+            </a>
+            <a href="{{ url_for('viewpages.retirar') }}">
+                <i class="fas fa-minus-circle"></i>
+                <span>Retirar</span>
+            </a>
+            <a href="{{ url_for('viewpages.transferir') }}">
+                <i class="fas fa-paper-plane"></i>
+                <span>Transferir</span>
+            </a>
+            <a href="{{ url_for('viewpages.servicios') }}">
+                <i class="fas fa-file-invoice"></i>
+                <span>Servicios</span>
+            </a>
+            <a href="#" class="active">
+                <i class="fas fa-robot"></i>
+                <span>Asistente</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a class="logout-btn" href="{{ url_for('auth.logout') }}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+    <main class="main-content">
+        <div class="chat-container">
+            <!-- Cabecera del chat -->
+            <div class="chat-header">
+                <div class="walli-icon">
+                    <div class="walli-eyes"></div>
+                </div>
+                <h2>Asistente WALLI</h2>
+                <p>Pregúntame sobre tus finanzas</p>
+            </div>
+            <!-- Área de mensajes -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Los mensajes se agregarán dinámicamente aquí -->
+                <div class="message bot-message">
+                    <i class="fas fa-robot"></i>
+                    <div class="message-content">
+                        ¡Hola! Soy tu asistente WALLI. Puedo ayudarte con:
+                        <ul>
+                            <li>Análisis de gastos</li>
+                            <li>Consejos de ahorro</li>
+                            <li>Recomendaciones de inversión</li>
+                            <li>Presupuestos personalizados</li>
+                        </ul>
+                        ¿En qué puedo ayudarte hoy?
+                    </div>
+                </div>
+            </div>
+            <!-- Área de entrada -->
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Escribe tu pregunta aquí...">
+                <button id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+</body>
+</html> 
