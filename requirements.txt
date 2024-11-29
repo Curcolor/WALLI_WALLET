@@ -8,3 +8,5 @@ Flask-WTF
 email-validator
 cryptography.fernet
 cryptography
+# Necesario para el modelo de lenguaje
+ollama #libreria para el modelo de lenguaje llama3.1 8b

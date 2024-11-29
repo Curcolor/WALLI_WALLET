@@ -24,4 +24,8 @@ def create_app():
     for blueprint in blueprints:
         app.register_blueprint(blueprint)
 
+    print("Rutas registradas:")
+    for rule in app.url_map.iter_rules():
+        print(f"{rule.endpoint}: {rule.rule}")
+    
     return app
