@@ -30,19 +30,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Confirmar transferencia
     confirmTransferBtn.addEventListener('click', async function() {
         try {
+            const datosEnvio = {
+                cuenta_destino: recipientAccount.value,
+                monto: parseFloat(transferAmount.value),
+                descripcion: transferDescription.value
+            };
+            
+            console.log('Datos a enviar:', datosEnvio); // Debug
+            
             const response = await fetch('/api/transferencia/transferir', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    cuenta_destino: recipientAccount.value,
-                    monto: parseFloat(transferAmount.value),
-                    descripcion: transferDescription.value
-                })
+                body: JSON.stringify(datosEnvio)
             });
 
             const data = await response.json();
+            
+            console.log('Respuesta:', data); // Debug
 
             if (response.ok) {
                 // Actualizar el saldo en la interfaz
@@ -61,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(data.error || 'Error al procesar la transferencia');
             }
         } catch (error) {
+            console.error('Error completo:', error); // Debug
             alert(error.message);
         }
     });
