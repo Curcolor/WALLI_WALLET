@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from app.models.cuenta import Cuenta
+from app.models.transaccion import Transaccion
+from app.utils.encryption import get_encryption_key
 
 bp = Blueprint('transferencia', __name__, url_prefix='/api/transferencia')
 
@@ -9,14 +10,27 @@ bp = Blueprint('transferencia', __name__, url_prefix='/api/transferencia')
 def transferir():
     try:
         datos = request.get_json()
+        print("Datos recibidos:", datos)  # Debug
         
-        numero_telefono_destino = datos.get('cuenta_destino')  # Viene del campo recipientAccount del formulario
-        monto = float(datos.get('monto', 0))
+        if not datos:
+            return jsonify({'error': 'No se recibieron datos'}), 400
+            
+        numero_telefono_destino = datos.get('cuenta_destino')
+        print("Número destino:", numero_telefono_destino)  # Debug
+        
+        try:
+            monto = float(datos.get('monto', 0))
+        except ValueError:
+            return jsonify({'error': 'El monto debe ser un número válido'}), 400
+            
         descripcion = datos.get('descripcion')
         
         # Validar el número de teléfono
-        if not numero_telefono_destino or len(numero_telefono_destino) != 10:
-            return jsonify({'error': 'Número de teléfono inválido. Debe tener 10 dígitos'}), 400
+        if not numero_telefono_destino:
+            return jsonify({'error': 'El número de teléfono es requerido'}), 400
+            
+        if len(numero_telefono_destino) != 10:
+            return jsonify({'error': f'Número de teléfono inválido. Debe tener 10 dígitos. Recibido: {len(numero_telefono_destino)} dígitos'}), 400
             
         if not numero_telefono_destino.isdigit():
             return jsonify({'error': 'El número de teléfono solo debe contener dígitos'}), 400
@@ -26,9 +40,10 @@ def transferir():
         
         if monto < 1000:
             return jsonify({'error': 'El monto mínimo de transferencia es $1.000'}), 400
+            
+        print(f"Usuario actual ID: {current_user.id}")  # Debug
         
-        # Realizar la transferencia usando el número de teléfono
-        nuevo_saldo = Cuenta.transferir_dinero(
+        nuevo_saldo = Transaccion.transferir_dinero(
             cuenta_origen_id=current_user.id,
             numero_telefono_destino=numero_telefono_destino,
             monto=monto,

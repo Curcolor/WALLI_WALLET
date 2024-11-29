@@ -5,24 +5,15 @@ from base64 import b64encode, b64decode
 
 load_dotenv()
 
+ENCRYPTION_KEY = b'S1Zla2N6mRYOcoFvQONtsUytpMf0XJC8B9y4pgodcJk='  # Usa la clave con la que encriptaste originalmente
+
 def get_encryption_key():
-    # Primero intenta obtener la llave del entorno
-    env_key = os.getenv('ENCRYPTION_KEY')
-    if env_key:
-        return Fernet(env_key.encode())
-    
-    # Si no existe en el entorno, usa el archivo como respaldo
-    key_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'instance', 'encryption.key')
-    os.makedirs(os.path.dirname(key_path), exist_ok=True)
-    
-    if not os.path.exists(key_path):
-        key = Fernet.generate_key()
-        with open(key_path, 'wb') as key_file:
-            key_file.write(key)
-    else:
-        with open(key_path, 'rb') as key_file:
-            key = key_file.read()
-    return Fernet(key)
+    try:
+        # Usar la clave definida
+        return Fernet(ENCRYPTION_KEY)
+    except Exception as e:
+        print(f"Error al obtener clave de encriptación: {str(e)}")
+        raise
 
 # Instancia global de Fernet
 fernet = get_encryption_key()
