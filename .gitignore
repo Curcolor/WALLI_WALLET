@@ -1,0 +1,6 @@
+database/
+.env
+venv/
+ini_cero.sh
+__pycache__/
+

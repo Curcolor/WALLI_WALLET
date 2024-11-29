@@ -26,12 +26,12 @@ CREATE TABLE `clientes` (
   `id_cliente` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) NOT NULL,
   `apellido` varchar(255) NOT NULL,
-  `documento_identidad` int NOT NULL,
-  `correo_electronico` varchar(100) NOT NULL,
+  `documento_identidad` varchar(255) DEFAULT NULL,
+  `correo_electronico` varchar(255) DEFAULT NULL,
   `fecha_nacimiento` date NOT NULL,
   `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_cliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `clientes` (
 
 LOCK TABLES `clientes` WRITE;
 /*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
-INSERT INTO `clientes` VALUES (1,'jairo','arcia',1043311427,'jairo@gmail.com','2006-03-12','2024-11-24 14:13:50'),(2,'daniela','villa',1043312427,'daniela-villasb@gmail.com','2003-04-23','2024-11-24 14:54:07'),(3,'jorge','solano',1141312427,'jorge-solano@gmail.com','2001-12-01','2024-11-24 15:03:47'),(6,'Sara','Sierra',1043311421,'SaraSierra@gmail.com','2001-12-22','2024-11-25 10:02:05');
+INSERT INTO `clientes` VALUES (1,'Jairo ','Arcia','Z0FBQUFBQm5TVlhGVGtzdF9jeEY1amN0NHowLWttbXVCdVFPSnRiaU9TSk1xZXJoUHhja0JkLTByY2c2X08xSTZiQzQ3NnJfM1FoalZ6b0xvRnltaXFndWh5Und6N2RsY2c9PQ==','Z0FBQUFBQm5TVlhGZ19mcG96UkxQeGNPb2RwNTJvVWRUWWtKUFBmMHdoSVJCYUYyWEZmNkFZcEs3ZV9zU2puQjJNSjBVUFZZOGtlUU84X044aDlhV1NLQmlqdEUteVZUc0ljeVlxVk1ONGdteXNNSzB2QW8zamM9','2003-02-12','2024-11-29 05:48:53');
 /*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,13 +57,13 @@ CREATE TABLE `cuentas` (
   `saldo_actual` decimal(10,2) NOT NULL DEFAULT '0.00',
   `tipo_cuenta` enum('corriente','cats','ahorro') NOT NULL,
   `fecha_apertura` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `clave_ingreso` varchar(4) NOT NULL,
-  `numero_telefono_ingreso` varchar(10) NOT NULL,
+  `clave_ingreso` varchar(255) DEFAULT NULL,
+  `numero_telefono_ingreso` varchar(255) DEFAULT NULL,
   `estado` varchar(20) DEFAULT 'activa',
   PRIMARY KEY (`id_cuenta`),
   UNIQUE KEY `cuentas_id_cliente_unique` (`id_cliente`),
   CONSTRAINT `cuentas_id_cliente_foreign` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +72,7 @@ CREATE TABLE `cuentas` (
 
 LOCK TABLES `cuentas` WRITE;
 /*!40000 ALTER TABLE `cuentas` DISABLE KEYS */;
-INSERT INTO `cuentas` VALUES (1,1,10000.00,'ahorro','2024-11-24 14:13:50','1234','3103778136','activa'),(2,2,0.00,'ahorro','2024-11-24 14:54:07','1234','3123171136','activa'),(3,3,0.00,'ahorro','2024-11-24 15:03:47','1234','3024516690','activa'),(4,6,0.00,'ahorro','2024-11-25 10:02:05','5678','3024516691','activa');
+INSERT INTO `cuentas` VALUES (1,1,0.00,'ahorro','2024-11-29 05:48:53','Z0FBQUFBQm5TVlhGcnNQel9RRkdmT1JiYzFTOWNwZ2kta0wzcGx4STFjVW9LT1VMUGJ5TDBiVUF1Skh6UXgxSm1ZNWlkcGdNUkRtOHNrUkxwSVVPUVRxU1Yzbjc1WWZrQ3c9PQ==','Z0FBQUFBQm5TVlhGZ0VBUGhCY0dyZGE4bThNdnhNdlBDbzRndGVEYnRGWWRjdDk0SDc3VndGMVZBamVFdmMzenMyeWl1Z3ZPNlBnWkxXa2dEWXdoVVNYY2RHYTVScFRSMlE9PQ==','activa');
 /*!40000 ALTER TABLE `cuentas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,7 +93,7 @@ CREATE TABLE `deposito` (
   PRIMARY KEY (`id_deposito`),
   KEY `deposito_id_cuenta_index` (`id_cuenta`),
   CONSTRAINT `deposito_id_cuenta_foreign` FOREIGN KEY (`id_cuenta`) REFERENCES `cuentas` (`id_cuenta`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +102,6 @@ CREATE TABLE `deposito` (
 
 LOCK TABLES `deposito` WRITE;
 /*!40000 ALTER TABLE `deposito` DISABLE KEYS */;
-INSERT INTO `deposito` VALUES (1,1,10000.00,'2024-11-25 10:12:48','web','completado');
 /*!40000 ALTER TABLE `deposito` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -233,4 +232,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-25  5:23:52
+-- Dump completed on 2024-11-29  1:19:26

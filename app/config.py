@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
+
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'clave-secreta-por-defecto')
     MYSQL_HOST = os.getenv('MYSQL_HOST', 'localhost')

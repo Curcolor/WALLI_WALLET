@@ -13,11 +13,13 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         try:
+            print("Datos del formulario:", form.numero_telefono_ingreso.data, form.clave_ingreso.data)  # Registro de depuración
             cuenta = Cuenta.verificar_login(
                 form.numero_telefono_ingreso.data,
                 form.clave_ingreso.data
             )
             if cuenta:
+                print("Cuenta encontrada:", cuenta)  # Registro de depuración
                 cuenta_obj = Cuenta.get(cuenta['id_cuenta'])
                 login_user(cuenta_obj)
                 return redirect(url_for('viewpages.dashboard'))
