@@ -60,3 +60,34 @@ class Transaccion:
         cursor.close()
         conn.close()
         return transaccion_id 
+
+    @staticmethod
+    def obtener_depositos_usuario(id_usuario):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            # Consulta para obtener los depósitos
+            cursor.execute("""
+                SELECT 
+                    d.id_cuenta,
+                    d.monto,
+                    d.fecha_deposito,
+                    'WEB' as canal,
+                    'EXITOSO' as estado
+                FROM Depositos d
+                WHERE d.id_cuenta = %s
+                ORDER BY d.fecha_deposito DESC
+            """, (id_usuario,))
+            
+            depositos = cursor.fetchall()
+            
+            cursor.close()
+            conn.close()
+            
+            print(f"Depósitos obtenidos para usuario {id_usuario}: {len(depositos)}")
+            return depositos
+            
+        except Exception as e:
+            print(f"Error al obtener depósitos: {str(e)}")
+            raise Exception(f"Error al obtener depósitos: {str(e)}")
