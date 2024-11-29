@@ -29,3 +29,10 @@ class Transaccion:
         cursor.close()
         conn.close()
         return transaccion_id 
+    
+    def obtener_transacciones_usuario(usuario_id):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Transacciones WHERE cuenta_origen = %s", (usuario_id,))
+        transacciones = cursor.fetchall()
+        return transacciones

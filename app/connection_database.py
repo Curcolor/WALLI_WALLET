@@ -9,3 +9,4 @@ def get_db_connection():
         database=Config.MYSQL_DATABASE
     )
     return connection 
+print(get_db_connection())
