@@ -23,4 +23,74 @@ function actualizarSaldoDespuesDeRetiro(nuevoSaldo) {
     if (balanceElement) {
         balanceElement.textContent = nuevoSaldo.toLocaleString('es-CO');
     }
-} 
+}
+
+function cargarTransacciones() {
+    fetch('/api/transferencia/historial', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        const transactionsList = document.getElementById('recentTransactions');
+        transactionsList.innerHTML = ''; // Limpiar contenido existente
+
+        if (data.transacciones.length === 0) {
+            transactionsList.innerHTML = `
+                <div class="no-transactions">
+                    <p>No hay transacciones recientes</p>
+                </div>
+            `;
+            return;
+        }
+
+        data.transacciones.forEach(trans => {
+            const transactionEl = document.createElement('div');
+            transactionEl.className = 'transaction-item';
+            
+            // Determinar el ícono según el canal
+            let icono = '';
+            switch (trans.canal) {
+                case 'deposito':
+                    icono = 'fa-plus-circle';
+                    break;
+                case 'retiro':
+                    icono = 'fa-minus-circle';
+                    break;
+                case 'transferencia':
+                    icono = 'fa-paper-plane';
+                    break;
+                default:
+                    icono = 'fa-exchange-alt';
+            }
+
+            transactionEl.innerHTML = `
+                <div class="transaction-icon">
+                    <i class="fas ${icono}"></i>
+                </div>
+                <div class="transaction-details">
+                    <div class="transaction-type">${trans.canal}</div>
+                    <div class="transaction-date">${new Date(trans.fecha).toLocaleDateString('es-ES')}</div>
+                </div>
+                <div class="transaction-amount ${trans.canal === 'deposito' ? 'positive' : 'negative'}">
+                    ${trans.canal === 'deposito' ? '+' : '-'} $${trans.monto.toLocaleString('es-ES')}
+                </div>
+                <div class="transaction-status ${trans.estado}">
+                    ${trans.estado}
+                </div>
+            `;
+            
+            transactionsList.appendChild(transactionEl);
+        });
+    })
+    .catch(error => {
+        console.error('Error al cargar transacciones:', error);
+    });
+}
+
+// Cargar transacciones cuando se carga la página
+document.addEventListener('DOMContentLoaded', cargarTransacciones);
+  

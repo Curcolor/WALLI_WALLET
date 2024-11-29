@@ -13,6 +13,37 @@ class Transaccion:
         self.estado = estado
 
     @staticmethod
+    def obtener_transacciones_usuario(id_cuenta):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            query = """
+                SELECT 
+                    id_cuenta_envio,
+                    monto,
+                    fecha_transaccion,
+                    canal,
+                    estado
+                FROM transaccion
+                WHERE id_cuenta_origen = %s
+                ORDER BY fecha_transaccion DESC
+                LIMIT 10
+            """
+            
+            cursor.execute(query, (id_cuenta,))
+            transacciones = cursor.fetchall()
+            
+            return transacciones
+            
+        except Exception as e:
+            print(f"Error al obtener transacciones: {str(e)}")
+            return []
+        finally:
+            cursor.close()
+            conn.close()
+
+    @staticmethod
     def crear_transaccion(cuenta_origen, cuenta_destino, monto, tipo):
         conn = get_db_connection()
         cursor = conn.cursor()

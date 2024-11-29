@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app.models.cuenta import Cuenta
+from app.models.transaccion import Transaccion
 
 bp = Blueprint('transferencia', __name__, url_prefix='/api/transferencia')
 
@@ -47,3 +48,33 @@ def transferir():
     except Exception as e:
         print(f"Error en transferencia: {str(e)}")  # Debug
         return jsonify({'error': 'Error al procesar la transferencia'}), 500 
+
+@bp.route('/historial', methods=['GET'])
+@login_required
+def obtener_historial():
+    try:
+        # Obtener el historial de transacciones del usuario actual
+        transacciones = Transaccion.obtener_transacciones_usuario(current_user.id)
+        
+        print(f"Usuario {current_user.id} - Total de transacciones encontradas: {len(transacciones)}")
+        
+        # Formatear las transacciones para el frontend
+        historial_formateado = []
+        for trans in transacciones:
+            print(f"Transacción - Cuenta: {trans[0]}, Monto: {trans[1]}, Estado: {trans[4]}")
+            historial_formateado.append({
+                'cuenta_envio': trans[0],
+                'monto': float(trans[1]),
+                'fecha': trans[2].strftime('%Y-%m-%d %H:%M:%S'),
+                'canal': trans[3],
+                'estado': trans[4]
+            })
+        
+        return jsonify({
+            'transacciones': historial_formateado
+        }), 200
+        
+    except Exception as e:
+        print(f"Error al obtener historial: {str(e)}")  # Debug
+        print(f"Tipo de error: {type(e).__name__}")  # Tipo de error
+        return jsonify({'error': 'Error al obtener el historial de transacciones'}), 500 
