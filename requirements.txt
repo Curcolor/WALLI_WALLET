@@ -3,6 +3,8 @@ mysql-connector-python
 python-dotenv
 Flask-WTF
 Werkzeug
-Flask-Login
+flask_login
 Flask-WTF
 email-validator
+cryptography.fernet
+cryptography

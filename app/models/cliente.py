@@ -1,4 +1,5 @@
 from app.connection_database import get_db_connection
+from app.utils.encryption import encrypt_data, decrypt_data
 
 class Cliente:
     @staticmethod
@@ -8,6 +9,10 @@ class Cliente:
         try:
             conn.start_transaction()
             
+            # Encriptar datos sensibles
+            documento_encriptado = encrypt_data(datos['documento_identidad'])
+            correo_encriptado = encrypt_data(datos['correo_electronico'])
+            
             cursor.execute("""
                 INSERT INTO Clientes (nombre, apellido, documento_identidad, 
                                     correo_electronico, fecha_nacimiento)
@@ -15,12 +20,16 @@ class Cliente:
             """, (
                 datos['nombre'],
                 datos['apellido'],
-                datos['documento_identidad'],
-                datos['correo_electronico'],
+                documento_encriptado,
+                correo_encriptado,
                 datos['fecha_nacimiento']
             ))
             
             cliente_id = cursor.lastrowid
+            
+            # Encriptar datos de cuenta
+            clave_encriptada = encrypt_data(datos['clave_ingreso'])
+            telefono_encriptado = encrypt_data(datos['numero_telefono_ingreso'])
             
             cursor.execute("""
                 INSERT INTO Cuentas (id_cliente, tipo_cuenta, clave_ingreso, 
@@ -29,8 +38,8 @@ class Cliente:
             """, (
                 cliente_id,
                 datos['tipo_cuenta'],
-                datos['clave_ingreso'],  # Clave en texto plano
-                datos['numero_telefono_ingreso']
+                clave_encriptada,
+                telefono_encriptado
             ))
             
             conn.commit()

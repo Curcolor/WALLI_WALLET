@@ -1,0 +1,8 @@
+database/
+encryption.key
+*.sql
+.env
+venv/
+ini_cero.sh
+__pycache__/
+

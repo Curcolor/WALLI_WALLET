@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from app.connection_database import get_db_connection
+from app.utils.encryption import encrypt_data, decrypt_data
 
 class Cuenta(UserMixin):
     def __init__(self, id=None, id_cliente=None, saldo_actual=0.00, tipo_cuenta='ahorro', 
@@ -14,26 +15,68 @@ class Cuenta(UserMixin):
 
     def get_id(self):
         return str(self.id)
+    
+    def ver_datos_encriptados(self):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            cursor.execute("""
+                SELECT id_cuenta, id_cliente, clave_ingreso, numero_telefono_ingreso 
+                FROM cuentas
+            """)
+            cuentas = cursor.fetchall()
+            
+            print("\n=== DATOS DE CUENTAS ===")
+            for cuenta in cuentas:
+                print(f"\nCuenta ID: {cuenta['id_cuenta']}")
+                print(f"Cliente ID: {cuenta['id_cliente']}")
+                print("\nDatos Encriptados:")
+                print(f"Teléfono: {cuenta['numero_telefono_ingreso']}")
+                print(f"Clave: {cuenta['clave_ingreso']}")
+                
+                # Mostrar datos desencriptados
+                try:
+                    print("\nDatos Desencriptados:")
+                    print(f"Teléfono: {decrypt_data(cuenta['numero_telefono_ingreso'])}")
+                    print(f"Clave: {decrypt_data(cuenta['clave_ingreso'])}")
+                except Exception as e:
+                    print(f"Error al desencriptar: {str(e)}")
+                print("-" * 50)
+                
+        except Exception as e:
+            print(f"Error: {str(e)}")
+        finally:
+            cursor.close()
+            conn.close()
 
     @staticmethod
     def verificar_login(numero_telefono, clave):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         try:
-            print(f"Verificando login para teléfono: {numero_telefono}")
+            # Obtener todas las cuentas
+            cursor.execute("SELECT id_cuenta, clave_ingreso, numero_telefono_ingreso FROM Cuentas")
+            cuentas = cursor.fetchall()
+
+            cuenta_test = Cuenta()
+            cuenta_test.ver_datos_encriptados()
             
-            cursor.execute("""
-                SELECT id_cuenta, clave_ingreso, numero_telefono_ingreso 
-                FROM Cuentas 
-                WHERE numero_telefono_ingreso = %s 
-                AND clave_ingreso = %s
-            """, (numero_telefono, clave))
-            
-            cuenta = cursor.fetchone()
-            print(f"Cuenta encontrada: {cuenta}")  # Debug
-            
-            return cuenta
-            
+            for cuenta in cuentas:
+                try:
+                    # Desencriptar y comparar el número de teléfono
+                    telefono_desencriptado = decrypt_data(cuenta['numero_telefono_ingreso'])
+
+                    if telefono_desencriptado == numero_telefono:
+                        # Si el teléfono coincide, verificar la clave
+                        clave_desencriptada = decrypt_data(cuenta['clave_ingreso'])
+                        if clave == clave_desencriptada:
+                            return cuenta
+                except Exception as e:
+                    print(f"Error al desencriptar cuenta {cuenta['id_cuenta']}: {str(e)}")
+                    continue
+                
+            return None
+                
         except Exception as e:
             print(f"Error en verificar_login: {str(e)}")
             raise e
