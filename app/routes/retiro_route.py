@@ -43,34 +43,28 @@ def listar_retiros():
 def retirar():
     try:
         datos = request.get_json()
-        print(f"Datos recibidos: {datos}")  # Debug
-        
         monto = float(datos.get('monto', 0))
         cuenta_id = current_user.id
-        
-        print(f"Procesando retiro - Monto: {monto}, Cuenta ID: {cuenta_id}")  # Debug
         
         if monto <= 0:
             return jsonify({'error': 'El monto debe ser positivo'}), 400
         
-        # Obtener saldo antes del retiro
-        saldo_anterior = Cuenta.obtener_saldo(cuenta_id)
-        print(f"Saldo anterior: {saldo_anterior}")  # Debug
+        # Crear el retiro usando la clase Retiro
+        retiro_id = Retiro.crear_retiro(cuenta_id, monto)
         
-        # Realizar el retiro
-        nuevo_saldo = Cuenta.retirar_dinero(cuenta_id, monto)
-        print(f"Nuevo saldo: {nuevo_saldo}")  # Debug
+        # Obtener el nuevo saldo después del retiro
+        nuevo_saldo = Cuenta.obtener_saldo(cuenta_id)
         
         return jsonify({
             'mensaje': 'Retiro realizado con éxito',
             'monto': monto,
             'nuevo_saldo': nuevo_saldo,
-            'saldo_anterior': saldo_anterior
+            'retiro_id': retiro_id
         }), 200
         
     except ValueError as e:
-        print(f"Error de validación: {str(e)}")  # Debug
+        print(f"Error de validación: {str(e)}")
         return jsonify({'error': str(e)}), 400
     except Exception as e:
-        print(f"Error en retiro: {str(e)}")  # Debug
+        print(f"Error en retiro: {str(e)}")
         return jsonify({'error': 'Error al procesar el retiro'}), 500 

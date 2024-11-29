@@ -9,7 +9,6 @@ bp = Blueprint('transferencia', __name__, url_prefix='/api/transferencia')
 def transferir():
     try:
         datos = request.get_json()
-        print(f"Datos recibidos: {datos}")  # Debug
         
         numero_telefono_destino = datos.get('cuenta_destino')  # Viene del campo recipientAccount del formulario
         monto = float(datos.get('monto', 0))
