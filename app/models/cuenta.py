@@ -22,7 +22,7 @@ class Cuenta(UserMixin):
         try:
             cursor.execute("""
                 SELECT id_cuenta, id_cliente, clave_ingreso, numero_telefono_ingreso 
-                FROM cuentas
+                FROM Cuentas
             """)
             cuentas = cursor.fetchall()
             
@@ -55,7 +55,7 @@ class Cuenta(UserMixin):
         cursor = conn.cursor(dictionary=True)
         try:
             # Obtener todas las cuentas
-            cursor.execute("SELECT id_cuenta, clave_ingreso, numero_telefono_ingreso FROM Cuentas")
+            cursor.execute("SELECT id_cuenta, clave_ingreso, numero_telefono_ingreso FROM cuentas")
             cuentas = cursor.fetchall()
 
             cuenta_test = Cuenta()

@@ -37,7 +37,7 @@ class Retiro:
             codigo_retiro = Retiro.generar_codigo_retiro()
             
             # Crear el retiro
-            sql_retiro = """INSERT INTO retiros 
+            sql_retiro = """INSERT INTO Retiros 
                           (id_cuenta, monto, fecha_retiro, canal_retiro, codigo_retiro, estado) 
                           VALUES (%s, %s, %s, %s, %s, %s)"""
             cursor.execute(sql_retiro, (
