@@ -5,12 +5,17 @@ from base64 import b64encode, b64decode
 
 load_dotenv()
 
-ENCRYPTION_KEY = b'S1Zla2N6mRYOcoFvQONtsUytpMf0XJC8B9y4pgodcJk='  # Usa la clave con la que encriptaste originalmente
-
 def get_encryption_key():
     try:
-        # Usar la clave definida
-        return Fernet(ENCRYPTION_KEY)
+        # Intenta obtener la clave del entorno
+        key = os.getenv('ENCRYPTION_KEY')
+        if not key:
+            print("ADVERTENCIA: No se encontró ENCRYPTION_KEY en variables de entorno")
+            # Si no existe, crea una nueva (esto debería ocurrir solo en desarrollo)
+            key = Fernet.generate_key()
+            print(f"Nueva clave generada: {key}")  # Debug - NO DEJAR EN PRODUCCIÓN
+        
+        return Fernet(key if isinstance(key, bytes) else key.encode())
     except Exception as e:
         print(f"Error al obtener clave de encriptación: {str(e)}")
         raise
