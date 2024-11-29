@@ -1,4 +1,6 @@
 database/
+encryption.key
+*.sql
 .env
 venv/
 ini_cero.sh
