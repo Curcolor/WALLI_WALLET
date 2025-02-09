@@ -67,8 +67,8 @@ class Walli:
         """
         
         for transaccion in transacciones:
-            id_transaccion, cuenta_origen, cuenta_destino, monto, tipo, fecha, canal, estado = transaccion
-            resumen += f"{fecha}: {tipo} de ${monto} enviado a {cuenta_destino} por {canal} desde {cuenta_origen} con estado {estado} con id {id_transaccion}\n"
+            id_transaccion, cuenta_origen, cuenta_destino, monto, tipo, fecha, estado = transaccion
+            resumen += f"{fecha}: {tipo} de ${monto} - De: {cuenta_origen} A: {cuenta_destino} - Estado: {estado} (ID: {id_transaccion})\n"
         
         return resumen
     
