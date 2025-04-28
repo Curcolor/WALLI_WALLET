@@ -106,8 +106,8 @@ def get_chatbot_response(prompt, cliente_id=None):
             {"role": "system", "content": system_message},
             {"role": "user", "content": user_message}
         ],
-        "temperature": 0.7,
-        "max_tokens": 500
+        "temperature": 0.5,
+        "max_tokens": 200,
     }
 
     try:
