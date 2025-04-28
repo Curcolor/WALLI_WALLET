@@ -8,4 +8,4 @@ email-validator
 cryptography.fernet
 cryptography
 deepseek-ai
-requests>=2.31.0
+requests
