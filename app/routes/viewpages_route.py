@@ -177,15 +177,18 @@ def chatbot():
 @bp.route('/chatbot/message', methods=['POST'])
 @login_required
 def chatbot_message():
-    data = request.json
-    user_message = data.get('message', '')
-    
-    # Obtener el ID del cliente desde la sesión
-    cliente_id = session.get('cliente_id')
-    
-    # Obtener respuesta de DeepSeek con contexto del cliente
-    bot_response = get_chatbot_response(user_message, cliente_id)
-    
-    return jsonify({
-        'response': bot_response
-    })
+    try:
+        data = request.json
+        user_message = data.get('message', '')
+        cliente_id = current_user.id_cliente if current_user.is_authenticated else None
+        
+        bot_response = get_chatbot_response(user_message, cliente_id)
+        return jsonify({
+            'success': True,
+            'response': bot_response
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'response': 'Lo siento, ocurrió un error al procesar tu solicitud.'
+        }), 500
