@@ -1,10 +1,11 @@
 Flask
 mysql-connector-python
 python-dotenv
-Flask-WTF
 Werkzeug
 flask_login
 Flask-WTF
 email-validator
 cryptography.fernet
 cryptography
+deepseek-ai
+requests>=2.31.0
