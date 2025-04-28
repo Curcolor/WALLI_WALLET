@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, jsonify
 from flask_login import login_user, login_required, current_user
 from app.forms.auth_forms import LoginForm, RegistroForm
 from app.models import Cuenta, Cliente
 from app.connection_database import get_db_connection
+from ..utils.chatbot_utils import get_chatbot_response
 
 bp = Blueprint('viewpages', __name__)
 
@@ -172,3 +173,22 @@ def pago_servicios():
 def chatbot():
     info_cuenta = obtener_info_cuenta(current_user.id)
     return render_template('chatbot.html', **info_cuenta)
+
+@bp.route('/chatbot/message', methods=['POST'])
+@login_required
+def chatbot_message():
+    try:
+        data = request.json
+        user_message = data.get('message', '')
+        cliente_id = current_user.id_cliente if current_user.is_authenticated else None
+        
+        bot_response = get_chatbot_response(user_message, cliente_id)
+        return jsonify({
+            'success': True,
+            'response': bot_response
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'response': 'Lo siento, ocurrió un error al procesar tu solicitud.'
+        }), 500

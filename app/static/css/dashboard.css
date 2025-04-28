@@ -88,26 +88,84 @@
 
 /* Transacciones recientes */
 .recent-transactions {
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    margin-top: 30px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.transactions-list {
+    margin-top: 15px;
 }
 
 .transaction-item {
     display: flex;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid var(--walli-beige);
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s;
 }
 
-.transaction-amount.deposit {
-    color: var(--walli-green);
+.transaction-item:hover {
+    background-color: #f8f9fa;
 }
 
-.transaction-amount.withdraw {
-    color: var(--walli-red);
+.transaction-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.transaction-icon.deposito {
+    background-color: #e7f5ea;
+    color: #28a745;
+}
+
+.transaction-icon.retiro {
+    background-color: #fde8e8;
+    color: #dc3545;
+}
+
+.transaction-icon.transferencia {
+    background-color: #e7f0fd;
+    color: #007bff;
+}
+
+.transaction-icon.servicio {
+    background-color: #fff3cd;
+    color: #ffc107;
+}
+
+.transaction-details {
+    flex: 1;
+}
+
+.transaction-title {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.transaction-date {
+    font-size: 0.85em;
+    color: #777;
+}
+
+.transaction-amount {
+    font-weight: 600;
+}
+
+.transaction-amount.positive {
+    color: #28a745;
+}
+
+.transaction-amount.negative {
+    color: #dc3545;
 }
 
 /* Botón de actualizar */
