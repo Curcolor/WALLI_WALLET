@@ -112,4 +112,38 @@
 @keyframes blink {
     0%, 90%, 100% { opacity: 1; }
     95% { opacity: 0.3; }
-} 
+}
+
+.typing-indicator {
+    display: flex;
+    gap: 8px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 15px;
+    width: fit-content;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background: var(--walli-orange);
+    border-radius: 50%;
+    animation: typing-bounce 0.8s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-4px);
+    }
+}

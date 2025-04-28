@@ -16,6 +16,22 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    function addTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message typing-message';
+        typingDiv.innerHTML = `
+            <i class="fas fa-robot"></i>
+            <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return typingDiv;
+    }
+
     async function sendMessage() {
         const message = userInput.value.trim();
         if (!message) return;
@@ -23,6 +39,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Agregar mensaje del usuario
         addMessage(message, true);
         userInput.value = '';
+
+        // Agregar indicador de escritura
+        const typingIndicator = addTypingIndicator();
 
         try {
             const response = await fetch('/chatbot/message', {
@@ -34,8 +53,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
+            
+            // Eliminar el indicador de escritura
+            typingIndicator.remove();
+            
+            // Agregar la respuesta del bot
             addMessage(data.response);
         } catch (error) {
+            // Eliminar el indicador de escritura
+            typingIndicator.remove();
             addMessage('Lo siento, ha ocurrido un error al procesar tu mensaje.');
         }
     }

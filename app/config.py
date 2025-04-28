@@ -14,4 +14,4 @@ class Config:
     PORT = int(os.getenv('PORT', 5050))
     HOST = os.getenv('HOST', '0.0.0.0')
     LOGIN_VIEW = 'auth.login'
-    DEEPSEEK_API_KEY = 'sk-ae7619ef9e324719b65586e0def1e610'
+    DEEPSEEK_API_KEY = os.getenv('API_DEEPSEEK_KEY')

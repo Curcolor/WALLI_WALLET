@@ -6,4 +6,5 @@ venv/
 ini_cero.sh
 __pycache__/
 *.py[cod]
+instance/
 
