@@ -13,7 +13,7 @@ def get_recent_transactions():
         # Obtener el ID de la cuenta del usuario actual
         cursor.execute("""
             SELECT id_cuenta 
-            FROM Cuentas 
+            FROM cuentas 
             WHERE id_cliente = %s
         """, (current_user.id_cliente,))
         cuenta = cursor.fetchone()
@@ -24,12 +24,12 @@ def get_recent_transactions():
         # Consultar depósitos
         cursor.execute("""
             SELECT 
-                'DEPOSITO' as tipo_transaccion,
+                'deposito' as tipo_transaccion,
                 monto,
                 fecha_deposito as fecha_transaccion,
                 'Depósito realizado' as descripcion,
                 estado
-            FROM Deposito 
+            FROM deposito 
             WHERE id_cuenta = %s
             
             UNION ALL
@@ -40,7 +40,7 @@ def get_recent_transactions():
                 fecha_retiro as fecha_transaccion,
                 'Retiro de dinero' as descripcion,
                 estado
-            FROM Retiros 
+            FROM retiros 
             WHERE id_cuenta = %s
             
             UNION ALL
@@ -54,7 +54,7 @@ def get_recent_transactions():
                     ELSE 'Transferencia recibida'
                 END as descripcion,
                 estado
-            FROM Transaccion 
+            FROM transaccion 
             WHERE id_cuenta_origen = %s OR id_cuenta_envio = %s
             
             UNION ALL
@@ -65,8 +65,8 @@ def get_recent_transactions():
                 ps.fecha_pago as fecha_transaccion,
                 CONCAT('Pago de ', IFNULL(s.nombre_servicio, 'servicio')) as descripcion,
                 ps.estado
-            FROM Pagosservicios ps
-            LEFT JOIN Servicios s ON ps.id_servicio = s.id_servicio
+            FROM pagosservicios ps
+            LEFT JOIN servicios s ON ps.id_servicio = s.id_servicio
             WHERE ps.id_cuenta = %s
             
             ORDER BY fecha_transaccion DESC
@@ -81,7 +81,7 @@ def get_recent_transactions():
             if transaction['fecha_transaccion']:
                 transaction['fecha_transaccion'] = transaction['fecha_transaccion'].strftime('%Y-%m-%d %H:%M:%S')
         
-        print(f"Transacciones encontradas: {len(transactions)}")
+        print(f"transacciones encontradas: {len(transactions)}")
         for t in transactions:
             print(f"- {t['tipo_transaccion']}: {t['monto']} ({t['fecha_transaccion']}) - {t['estado']}")
             

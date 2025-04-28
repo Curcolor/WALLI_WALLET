@@ -13,8 +13,8 @@ def obtener_info_cuenta(id_cuenta):
     try:
         cursor.execute("""
             SELECT c.saldo_actual, cl.nombre, cl.apellido
-            FROM Cuentas c
-            JOIN Clientes cl ON c.id_cliente = cl.id_cliente
+            FROM cuentas c
+            JOIN clientes cl ON c.id_cliente = cl.id_cliente
             WHERE c.id_cuenta = %s
         """, (id_cuenta,))
         
@@ -39,7 +39,7 @@ def obtener_saldo_actual(id_cuenta):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        cursor.execute("SELECT saldo_actual FROM Cuentas WHERE id_cuenta = %s", (id_cuenta,))
+        cursor.execute("SELECT saldo_actual FROM cuentas WHERE id_cuenta = %s", (id_cuenta,))
         resultado = cursor.fetchone()
         return float(resultado['saldo_actual']) if resultado else 0.0
     finally:

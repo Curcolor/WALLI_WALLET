@@ -24,7 +24,7 @@ class Retiro:
         
         try:
             # Verificar saldo suficiente
-            cursor.execute("SELECT saldo_actual FROM Cuentas WHERE id_cuenta = %s", (cuenta_id,))
+            cursor.execute("SELECT saldo_actual FROM cuentas WHERE id_cuenta = %s", (cuenta_id,))
             saldo_actual = cursor.fetchone()[0]
             
             if saldo_actual < monto:
@@ -37,7 +37,7 @@ class Retiro:
             codigo_retiro = Retiro.generar_codigo_retiro()
             
             # Crear el retiro
-            sql_retiro = """INSERT INTO Retiros 
+            sql_retiro = """INSERT INTO retiros 
                           (id_cuenta, monto, fecha_retiro, canal_retiro, codigo_retiro, estado) 
                           VALUES (%s, %s, %s, %s, %s, %s)"""
             cursor.execute(sql_retiro, (
@@ -50,7 +50,7 @@ class Retiro:
             ))
             
             # Actualizar el saldo
-            sql_actualizar = """UPDATE Cuentas 
+            sql_actualizar = """UPDATE cuentas 
                               SET saldo_actual = saldo_actual - %s 
                               WHERE id_cuenta = %s"""
             cursor.execute(sql_actualizar, (monto, cuenta_id))

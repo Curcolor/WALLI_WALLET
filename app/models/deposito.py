@@ -1,7 +1,7 @@
 from app.connection_database import get_db_connection
 from datetime import datetime
 
-class Deposito:
+class deposito:
     def __init__(self, id=None, cuenta_id=None, monto=None, fecha=None, estado='en proceso'):
         self.id = id
         self.cuenta_id = cuenta_id
@@ -20,7 +20,7 @@ class Deposito:
             
             # Verificar que la cuenta existe
             cursor.execute("""
-                SELECT id_cuenta FROM Cuentas 
+                SELECT id_cuenta FROM cuentas 
                 WHERE id_cuenta = %s 
                 FOR UPDATE
             """, (id_cuenta,))
@@ -31,13 +31,13 @@ class Deposito:
             
             # Crear el depósito con los nombres correctos de las columnas
             cursor.execute("""
-                INSERT INTO Deposito (id_cuenta, monto, fecha_deposito, canal, estado) 
+                INSERT INTO deposito (id_cuenta, monto, fecha_deposito, canal, estado) 
                 VALUES (%s, %s, NOW(), 'web', 'completado')
             """, (id_cuenta, monto))
             
             # Actualizar el saldo
             cursor.execute("""
-                UPDATE Cuentas 
+                UPDATE cuentas 
                 SET saldo_actual = saldo_actual + %s 
                 WHERE id_cuenta = %s
             """, (monto, id_cuenta))

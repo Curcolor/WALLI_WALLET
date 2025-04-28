@@ -22,11 +22,11 @@ class Cuenta(UserMixin):
         try:
             cursor.execute("""
                 SELECT id_cuenta, id_cliente, clave_ingreso, numero_telefono_ingreso 
-                FROM Cuentas
+                FROM cuentas
             """)
             cuentas = cursor.fetchall()
             
-            print("\n=== DATOS DE CUENTAS ===")
+            print("\n=== DATOS DE cuentas ===")
             for cuenta in cuentas:
                 print(f"\nCuenta ID: {cuenta['id_cuenta']}")
                 print(f"Cliente ID: {cuenta['id_cliente']}")
@@ -90,7 +90,7 @@ class Cuenta(UserMixin):
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                INSERT INTO Cuentas (id_cliente, tipo_cuenta, clave_ingreso, 
+                INSERT INTO cuentas (id_cliente, tipo_cuenta, clave_ingreso, 
                                    numero_telefono_ingreso, saldo_actual)
                 VALUES (%s, %s, %s, %s, 0)
             """, (id_cliente, tipo_cuenta, clave_ingreso, numero_telefono_ingreso))
@@ -110,7 +110,7 @@ class Cuenta(UserMixin):
         cursor = conn.cursor(dictionary=True)
         try:
             cursor.execute("""
-                SELECT * FROM Cuentas WHERE id_cuenta = %s
+                SELECT * FROM cuentas WHERE id_cuenta = %s
             """, (user_id,))
             
             cuenta_data = cursor.fetchone()
@@ -136,7 +136,7 @@ class Cuenta(UserMixin):
         try:
             cursor.execute("""
                 SELECT saldo_actual 
-                FROM Cuentas 
+                FROM cuentas 
                 WHERE id_cuenta = %s
             """, (cuenta_id,))
             
@@ -159,7 +159,7 @@ class Cuenta(UserMixin):
             # Verificar saldo disponible
             cursor.execute("""
                 SELECT saldo_actual, estado 
-                FROM Cuentas 
+                FROM cuentas 
                 WHERE id_cuenta = %s 
                 FOR UPDATE
             """, (cuenta_id,))
@@ -181,7 +181,7 @@ class Cuenta(UserMixin):
             
             # Realizar el retiro
             cursor.execute("""
-                UPDATE Cuentas 
+                UPDATE cuentas 
                 SET saldo_actual = %s 
                 WHERE id_cuenta = %s
             """, (nuevo_saldo, cuenta_id))
@@ -212,7 +212,7 @@ class Cuenta(UserMixin):
             # Verificar cuenta origen y su saldo
             cursor.execute("""
                 SELECT c.saldo_actual, c.estado, c.numero_telefono_ingreso 
-                FROM Cuentas c
+                FROM cuentas c
                 WHERE c.id_cuenta = %s 
                 FOR UPDATE
             """, (cuenta_origen_id,))
@@ -230,7 +230,7 @@ class Cuenta(UserMixin):
             # Verificar cuenta destino usando el número de teléfono
             cursor.execute("""
                 SELECT id_cuenta, estado 
-                FROM Cuentas 
+                FROM cuentas 
                 WHERE numero_telefono_ingreso = %s 
                 FOR UPDATE
             """, (numero_telefono_destino,))
@@ -253,14 +253,14 @@ class Cuenta(UserMixin):
             # Realizar la transferencia
             # Restar de la cuenta origen
             cursor.execute("""
-                UPDATE Cuentas 
+                UPDATE cuentas 
                 SET saldo_actual = saldo_actual - %s 
                 WHERE id_cuenta = %s
             """, (monto_transferencia, cuenta_origen_id))
             
             # Sumar a la cuenta destino
             cursor.execute("""
-                UPDATE Cuentas 
+                UPDATE cuentas 
                 SET saldo_actual = saldo_actual + %s 
                 WHERE id_cuenta = %s
             """, (monto_transferencia, cuenta_destino_id))
@@ -277,7 +277,7 @@ class Cuenta(UserMixin):
             # Obtener nuevo saldo de la cuenta origen
             cursor.execute("""
                 SELECT saldo_actual 
-                FROM Cuentas 
+                FROM cuentas 
                 WHERE id_cuenta = %s
             """, (cuenta_origen_id,))
             

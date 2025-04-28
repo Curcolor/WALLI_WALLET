@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from app.models.transaccion import Transaccion
+from app.models.transaccion import transaccion
 from app.utils.encryption import get_encryption_key
 
 bp = Blueprint('transferencia', __name__, url_prefix='/api/transferencia')
@@ -43,7 +43,7 @@ def transferir():
             
         print(f"Usuario actual ID: {current_user.id}")  # Debug
         
-        nuevo_saldo = Transaccion.transferir_dinero(
+        nuevo_saldo = transaccion.transferir_dinero(
             cuenta_origen_id=current_user.id,
             numero_telefono_destino=numero_telefono_destino,
             monto=monto,

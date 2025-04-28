@@ -14,7 +14,7 @@ class Cliente:
             correo_encriptado = encrypt_data(datos['correo_electronico'])
             
             cursor.execute("""
-                INSERT INTO Clientes (nombre, apellido, documento_identidad, 
+                INSERT INTO clientes (nombre, apellido, documento_identidad, 
                                     correo_electronico, fecha_nacimiento)
                 VALUES (%s, %s, %s, %s, %s)
             """, (
@@ -32,7 +32,7 @@ class Cliente:
             telefono_encriptado = encrypt_data(datos['numero_telefono_ingreso'])
             
             cursor.execute("""
-                INSERT INTO Cuentas (id_cliente, tipo_cuenta, clave_ingreso, 
+                INSERT INTO cuentas (id_cliente, tipo_cuenta, clave_ingreso, 
                                    numero_telefono_ingreso)
                 VALUES (%s, %s, %s, %s)
             """, (

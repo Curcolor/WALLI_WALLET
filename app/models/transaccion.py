@@ -2,7 +2,7 @@ from app.connection_database import get_db_connection
 from datetime import datetime
 from app.utils.encryption import decrypt_data
 
-class Transaccion:
+class transaccion:
     def __init__(self, id=None, cuenta_origen=None, cuenta_destino=None, 
                  monto=None, tipo=None, fecha=None, estado='pendiente'):
         self.id = id
@@ -20,13 +20,13 @@ class Transaccion:
         
         try:
             # Verificar que la cuenta origen existe
-            cursor.execute("SELECT * FROM Cuentas WHERE id_cuenta = %s", (cuenta_origen_id,))
+            cursor.execute("SELECT * FROM cuentas WHERE id_cuenta = %s", (cuenta_origen_id,))
             cuenta_origen = cursor.fetchone()
             if not cuenta_origen:
                 raise ValueError("Cuenta origen no encontrada")
             
             # Obtener todas las cuentas y buscar coincidencia desencriptando
-            cursor.execute("SELECT * FROM Cuentas")
+            cursor.execute("SELECT * FROM cuentas")
             cuentas = cursor.fetchall()
             cuenta_destino = None
             
@@ -63,13 +63,13 @@ class Transaccion:
                 raise ValueError("Saldo insuficiente")
             
             # Realizar la transferencia
-            cursor.execute("UPDATE Cuentas SET saldo_actual = saldo_actual - %s WHERE id_cuenta = %s", 
+            cursor.execute("UPDATE cuentas SET saldo_actual = saldo_actual - %s WHERE id_cuenta = %s", 
                          (monto, cuenta_origen_id))
-            cursor.execute("UPDATE Cuentas SET saldo_actual = saldo_actual + %s WHERE id_cuenta = %s", 
+            cursor.execute("UPDATE cuentas SET saldo_actual = saldo_actual + %s WHERE id_cuenta = %s", 
                          (monto, cuenta_destino['id_cuenta']))
             
             # Registrar la transacción
-            sql = """INSERT INTO Transaccion (id_cuenta_origen, id_cuenta_envio, monto, 
+            sql = """INSERT INTO transaccion (id_cuenta_origen, id_cuenta_envio, monto, 
                     fecha_transaccion, canal, estado) VALUES (%s, %s, %s, %s, %s, %s)"""
             valores = (cuenta_origen_id, cuenta_destino['id_cuenta'], monto, 
                       datetime.now(), 'web', 'completado')
@@ -78,7 +78,7 @@ class Transaccion:
             conn.commit()
             
             # Retornar nuevo saldo
-            cursor.execute("SELECT saldo_actual FROM Cuentas WHERE id_cuenta = %s", (cuenta_origen_id,))
+            cursor.execute("SELECT saldo_actual FROM cuentas WHERE id_cuenta = %s", (cuenta_origen_id,))
             nuevo_saldo = cursor.fetchone()['saldo_actual']
             return nuevo_saldo
             
@@ -95,7 +95,7 @@ class Transaccion:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        sql = """INSERT INTO Transaccion (id_cuenta_origen, id_cuenta_envio, monto, 
+        sql = """INSERT INTO transaccion (id_cuenta_origen, id_cuenta_envio, monto, 
                 fecha_transaccion, canal, estado) VALUES (%s, %s, %s, %s, %s, %s)"""
         valores = (cuenta_origen, cuenta_destino, monto, tipo, 
                   datetime.now(), 'completada', descripcion)

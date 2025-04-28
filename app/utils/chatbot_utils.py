@@ -2,7 +2,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from app.connection_database import get_db_connection
-from app.models import Cliente, Cuenta, Transaccion, Deposito, Retiro, PagoServicio
+from app.models import Cliente, Cuenta, transaccion, deposito, Retiro, PagoServicio
 import json
 
 load_dotenv()
@@ -17,8 +17,8 @@ def get_account_info(cliente_id):
     try:
         cursor.execute("""
             SELECT c.saldo_actual, cl.nombre, cl.apellido 
-            FROM Cuentas c
-            JOIN Clientes cl ON c.id_cliente = cl.id_cliente
+            FROM cuentas c
+            JOIN clientes cl ON c.id_cliente = cl.id_cliente
             WHERE cl.id_cliente = %s
         """, (cliente_id,))
         return cursor.fetchone()
@@ -32,8 +32,8 @@ def get_recent_transactions(cliente_id):
     cursor = conn.cursor(dictionary=True)
     try:
         cursor.execute("""
-            SELECT t.* FROM Transaccion t
-            JOIN Cuentas c ON t.id_cuenta_origen = c.id_cuenta
+            SELECT t.* FROM transaccion t
+            JOIN cuentas c ON t.id_cuenta_origen = c.id_cuenta
             WHERE c.id_cliente = %s
             ORDER BY t.fecha_transaccion DESC LIMIT 5
         """, (cliente_id,))

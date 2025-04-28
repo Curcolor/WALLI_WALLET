@@ -12,7 +12,7 @@ class Servicio:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        sql = """INSERT INTO Servicios (nombre, descripcion, estado) 
+        sql = """INSERT INTO servicios (nombre, descripcion, estado) 
                 VALUES (%s, %s, 'ACTIVO')"""
         cursor.execute(sql, (nombre, descripcion))
         
@@ -28,7 +28,7 @@ class Servicio:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT * FROM Servicios")
+        cursor.execute("SELECT * FROM servicios")
         servicios = cursor.fetchall()
         
         cursor.close()

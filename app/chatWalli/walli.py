@@ -1,5 +1,5 @@
 import ollama
-from app.models.transaccion import Transaccion
+from app.models.transaccion import transaccion
 from app.connection_database import get_db_connection as get_db
 
 class Walli:
@@ -52,7 +52,7 @@ class Walli:
             return "No se pudo obtener la información de la cuenta"
         
         # Conectar a la base de datos
-        transacciones = Transaccion.obtener_transacciones_usuario(self.usuario_id)
+        transacciones = transaccion.obtener_transacciones_usuario(self.usuario_id)
         
         # Generar un resumen de las transacciones
         resumen = f"""

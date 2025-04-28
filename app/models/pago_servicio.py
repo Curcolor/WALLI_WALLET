@@ -18,14 +18,14 @@ class PagoServicio:
         
         try:
             # Verificar si el servicio existe
-            cursor.execute("SELECT id_servicio FROM Servicios WHERE id_servicio = %s", (servicio_id,))
+            cursor.execute("SELECT id_servicio FROM servicios WHERE id_servicio = %s", (servicio_id,))
             servicio = cursor.fetchone()
             
             if servicio is None:
                 raise ValueError("El servicio no existe")
             
             # Verificar saldo suficiente
-            cursor.execute("SELECT saldo_actual FROM Cuentas WHERE id_cuenta = %s", (cuenta_id,))
+            cursor.execute("SELECT saldo_actual FROM cuentas WHERE id_cuenta = %s", (cuenta_id,))
             saldo_actual = cursor.fetchone()
             
             if saldo_actual is None:
@@ -38,13 +38,13 @@ class PagoServicio:
             cursor.execute("START TRANSACTION")
             
             # Crear el pago
-            sql_pago = """INSERT INTO Pagosservicios 
+            sql_pago = """INSERT INTO pagosservicios 
                          (id_cuenta, id_servicio, monto, fecha_pago, estado) 
                          VALUES (%s, %s, %s, NOW(), 'completado')"""
             cursor.execute(sql_pago, (cuenta_id, servicio_id, monto))
             
             # Actualizar el saldo
-            sql_actualizar = """UPDATE Cuentas SET saldo_actual = saldo_actual - %s 
+            sql_actualizar = """UPDATE cuentas SET saldo_actual = saldo_actual - %s 
                               WHERE id_cuenta = %s"""
             cursor.execute(sql_actualizar, (monto, cuenta_id))
             
@@ -65,9 +65,9 @@ class PagoServicio:
         
         sql = """
             SELECT ps.*, s.nombre as servicio_nombre 
-            FROM Pagos_Servicios ps
-            JOIN Servicios s ON ps.servicio_id = s.id
-            JOIN Cuentas c ON ps.cuenta_id = c.id
+            FROM Pagos_servicios ps
+            JOIN servicios s ON ps.servicio_id = s.id
+            JOIN cuentas c ON ps.cuenta_id = c.id
             WHERE c.cliente_id = %s
             ORDER BY ps.fecha DESC
         """

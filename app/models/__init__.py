@@ -1,17 +1,17 @@
 from .cliente import Cliente
 from .cuenta import Cuenta
-from .deposito import Deposito
+from .deposito import deposito
 from .retiro import Retiro
 from .servicio import Servicio
 from .pago_servicio import PagoServicio
-from .transaccion import Transaccion
+from .transaccion import transaccion
 
 models = [
     Cliente,
     Cuenta,
-    Deposito,
+    deposito,
     Retiro,
     Servicio,
     PagoServicio,
-    Transaccion
+    transaccion
 ] 

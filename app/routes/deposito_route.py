@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app, session
 from flask_login import current_user, login_required
-from app.models.deposito import Deposito
+from app.models.deposito import deposito
 from app.connection_database import get_db_connection
 
 bp = Blueprint('deposito', __name__, url_prefix='/api/deposito')
@@ -15,7 +15,7 @@ def crear_deposito():
         if monto < 1000:
             return jsonify({'error': 'El monto mínimo de depósito es $1.000'}), 400
             
-        deposito_id = Deposito.crear_deposito(
+        deposito_id = deposito.crear_deposito(
             id_cuenta=current_user.id,
             monto=monto
         )
@@ -24,7 +24,7 @@ def crear_deposito():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute("""
-            SELECT saldo_actual FROM Cuentas WHERE id_cuenta = %s
+            SELECT saldo_actual FROM cuentas WHERE id_cuenta = %s
         """, (current_user.id,))
         nuevo_saldo = cursor.fetchone()['saldo_actual']
         cursor.close()
@@ -49,7 +49,7 @@ def listar_depositos():
         if not cliente_id:
             return jsonify({'error': 'No autorizado'}), 401
             
-        depositos = Deposito.obtener_depositos_por_cliente(cliente_id)
+        depositos = deposito.obtener_depositos_por_cliente(cliente_id)
         return jsonify({'depositos': depositos}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400 
