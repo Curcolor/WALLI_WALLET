@@ -20,6 +20,10 @@ def create_app():
         from app.models import Cuenta
         return Cuenta.get(user_id)
 
+    # Importar y registrar los blueprints
+    from app.routes.walli_route import bp as walli_bp
+    app.register_blueprint(walli_bp)
+
     # Registrar blueprints
     for blueprint in blueprints:
         app.register_blueprint(blueprint)

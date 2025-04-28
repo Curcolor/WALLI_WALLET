@@ -60,10 +60,13 @@ def get_financial_context(cliente_id):
 
         if transactions:
             for t in transactions:
+                # Verificar si existe tipo_transaccion y usar un valor por defecto si no
+                tipo = t.get('tipo_transaccion', 'Transacción')
+                
                 context["ultimas_transacciones"].append({
                     "monto": format_money(t['monto']),
                     "fecha": t['fecha_transaccion'].strftime("%d/%m/%Y"),
-                    "tipo": t['tipo_transaccion']
+                    "tipo": tipo
                 })
 
         return context
@@ -72,7 +75,10 @@ def get_financial_context(cliente_id):
         return None
 
 def get_chatbot_response(prompt, cliente_id=None):
-    api_key = os.getenv('DEEPSEEK_API_KEY')
+    api_key = os.getenv('API_DEEPSEEK_KEY')
+    if not api_key:
+        return "Error de configuración: No se encontró la clave API."
+    
     headers = {
         'Authorization': f'Bearer {api_key}',
         'Content-Type': 'application/json'
@@ -114,5 +120,13 @@ def get_chatbot_response(prompt, cliente_id=None):
         response = requests.post(url, json=payload, headers=headers)
         response.raise_for_status()
         return response.json()['choices'][0]['message']['content']
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 401:
+            print(f"Error de autenticación con la API: {e}")
+            return "Lo siento, hay un problema de autenticación con el servicio. Por favor, contacta al soporte técnico."
+        else:
+            print(f"Error de la API: {e}")
+            return "Lo siento, ha ocurrido un error con el servicio. Por favor, intenta nuevamente más tarde."
     except Exception as e:
-        return "Lo siento, ha ocurrido un error. Por favor, intenta nuevamente más tarde."
+        print(f"Error al obtener respuesta del chatbot: {e}")
+        return "Lo siento, ha ocurrido un error inesperado. Por favor, intenta nuevamente más tarde."

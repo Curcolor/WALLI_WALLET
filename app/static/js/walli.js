@@ -1,6 +1,6 @@
 async function sendMessage() {
     try {
-        const userInput = document.getElementById('userIinput').value;
+        const userInput = document.getElementById('userInput').value;
         if (!userInput.trim()) return;
         
         const chatDiv = document.getElementById('chatMessages');
@@ -15,7 +15,7 @@ async function sendMessage() {
         </div>`;
 
         // Limpia el campo de entrada
-        document.getElementById('userIinput').value = '';
+        document.getElementById('userInput').value = '';
 
         // Muestra indicador de "escribiendo..."
         chatDiv.innerHTML += `<div class="message bot-message" id="loadingMessage">
@@ -80,7 +80,7 @@ async function sendMessage() {
 // Agregar eventos
 document.addEventListener('DOMContentLoaded', () => {
     const sendButton = document.getElementById('sendMessage');
-    const inputField = document.getElementById('userIinput');
+    const inputField = document.getElementById('userInput');
 
     sendButton.addEventListener('click', sendMessage);
     
