@@ -37,7 +37,9 @@ python run.py # Ejecuta la aplicación Flask
 ### 👥 Equipo
 
 - ```@Curcolor```
+- ```@JUNIORRDSR```
 - ```@DANN-MAGE```
+- ```@SaryNotfound```
 
 ### 📄 Licencia
 
