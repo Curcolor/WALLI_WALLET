@@ -3,7 +3,7 @@ from flask_login import login_user, login_required, current_user
 from app.forms.auth_forms import LoginForm, RegistroForm
 from app.models import Cliente
 from app.services.cuenta_service import CuentaService
-from ..utils.chatbot_utils import get_chatbot_response
+from app.utils.chatbot_utils import get_chatbot_response
 
 bp = Blueprint('viewpages', __name__)
 
