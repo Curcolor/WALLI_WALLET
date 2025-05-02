@@ -3,6 +3,7 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.ext.hybrid import hybrid_property
+from app.utils.encryption import encrypt_data, decrypt_data
 
 class Cuenta(db.Model, UserMixin):
     __tablename__ = 'cuentas'
@@ -13,7 +14,7 @@ class Cuenta(db.Model, UserMixin):
     tipo_cuenta = db.Column(db.String(50), nullable=False)
     fecha_apertura = db.Column(db.DateTime, default=datetime.utcnow)
     _clave_ingreso = db.Column('clave_ingreso', db.String(255), nullable=False)
-    numero_telefono_ingreso = db.Column(db.String(10), nullable=False, unique=True)
+    _numero_telefono_ingreso = db.Column('numero_telefono_ingreso', db.String(255), nullable=False, unique=True)
     estado = db.Column(db.String(20), default='activa')
     
     # Relaciones
@@ -31,6 +32,7 @@ class Cuenta(db.Model, UserMixin):
     def get_id(self):
         return str(self.id_cuenta)
     
+    # Propiedad híbrida para clave de ingreso (ya está hasheada con werkzeug)
     @hybrid_property
     def clave_ingreso(self):
         return self._clave_ingreso
@@ -38,6 +40,15 @@ class Cuenta(db.Model, UserMixin):
     @clave_ingreso.setter
     def clave_ingreso(self, clave):
         self._clave_ingreso = generate_password_hash(clave)
+    
+    # Propiedad híbrida para número de teléfono (encriptado)
+    @hybrid_property
+    def numero_telefono_ingreso(self):
+        return decrypt_data(self._numero_telefono_ingreso)
+    
+    @numero_telefono_ingreso.setter
+    def numero_telefono_ingreso(self, telefono):
+        self._numero_telefono_ingreso = encrypt_data(telefono)
     
     def check_password(self, clave):
         return check_password_hash(self._clave_ingreso, clave)

@@ -1,9 +1,8 @@
 from flask import session
 from app.models import Cliente, Cuenta
 from app.extensions import db
-import random
-import string
-from werkzeug.security import generate_password_hash
+from sqlalchemy import or_
+from app.utils.encryption import encrypt_data, decrypt_data
 
 class AuthService:
     @staticmethod
@@ -11,18 +10,29 @@ class AuthService:
         """
         Verifica las credenciales de login y retorna la cuenta si es válida
         """
-        cuenta = Cuenta.query.filter_by(numero_telefono_ingreso=numero_telefono).first()
+        # Estrategia 1: Obtener todas las cuentas y comparar el número desencriptado
+        cuentas = Cuenta.query.all()
+        cuenta_encontrada = None
         
-        if not cuenta:
+        for cuenta in cuentas:
+            try:
+                if cuenta.numero_telefono_ingreso == numero_telefono:
+                    cuenta_encontrada = cuenta
+                    break
+            except:
+                # Si hay error al desencriptar, continuar con la siguiente
+                continue
+        
+        if not cuenta_encontrada:
             return None
             
-        if not cuenta.check_password(clave):
+        if not cuenta_encontrada.check_password(clave):
             return None
             
-        if cuenta.estado != 'activa':
+        if cuenta_encontrada.estado != 'activa':
             raise ValueError("La cuenta no está activa")
             
-        return cuenta
+        return cuenta_encontrada
         
     @staticmethod
     def register(nombre, apellido, documento_identidad, correo_electronico, 
@@ -31,29 +41,38 @@ class AuthService:
         Registra un nuevo cliente y su cuenta
         """
         # Verificar si ya existe un cliente con ese documento
-        cliente_existente = Cliente.query.filter_by(documento_identidad=documento_identidad).first()
-        if cliente_existente:
-            raise ValueError("Ya existe un cliente con ese documento de identidad")
-
+        # Esto es más complejo con datos encriptados, hay que revisar todos los clientes
+        clientes = Cliente.query.all()
+        for cliente in clientes:
+            try:
+                if cliente.documento_identidad == documento_identidad:
+                    raise ValueError("Ya existe un cliente con ese documento de identidad")
+            except:
+                continue
+                
         # Verificar si ya existe una cuenta con ese teléfono
-        cuenta_existente = Cuenta.query.filter_by(numero_telefono_ingreso=numero_telefono_ingreso).first()
-        if cuenta_existente:
-            raise ValueError("Ya existe una cuenta con ese número de teléfono")
+        cuentas = Cuenta.query.all()
+        for cuenta in cuentas:
+            try:
+                if cuenta.numero_telefono_ingreso == numero_telefono_ingreso:
+                    raise ValueError("Ya existe una cuenta con ese número de teléfono")
+            except:
+                continue
         
         # Crear el cliente
         cliente = Cliente(
             nombre=nombre,
             apellido=apellido,
-            documento_identidad=documento_identidad,
-            correo_electronico=correo_electronico,
+            documento_identidad=documento_identidad,  # Se encripta automáticamente 
+            correo_electronico=correo_electronico,    # Se encripta automáticamente
             fecha_nacimiento=fecha_nacimiento
         )
         
         # Crear la cuenta
         cuenta = Cuenta(
             tipo_cuenta=tipo_cuenta,
-            clave_ingreso=clave_ingreso,
-            numero_telefono_ingreso=numero_telefono_ingreso,
+            clave_ingreso=clave_ingreso,              # Se hashea automáticamente
+            numero_telefono_ingreso=numero_telefono_ingreso,  # Se encripta automáticamente
             saldo_actual=0.00,
             estado='activa'
         )
