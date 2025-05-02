@@ -1,72 +1,63 @@
 import os
 import requests
 from dotenv import load_dotenv
-from app.connection_database import get_db_connection
-from app.models import Cliente, Cuenta, transaccion, deposito, Retiro, PagoServicio
+from app.services.cuenta_service import CuentaService
+from app.schemas.transaccion_resumen_schema import TransaccionResumenSchema
+from app.extensions import db
 import json
 
 load_dotenv()
 
 def format_money(amount):
-    return f"${amount:,.2f}"
+    """Formatea un valor monetario con formato de moneda"""
+    if amount is None:
+        return "$0.00"
+    return f"${float(amount):,.2f}"
 
-def get_account_info(cliente_id):
-    """Obtiene información básica de la cuenta del cliente"""
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+def get_account_info(cuenta_id):
+    """Obtiene información básica de la cuenta usando el servicio existente"""
     try:
-        cursor.execute("""
-            SELECT c.saldo_actual, cl.nombre, cl.apellido 
-            FROM cuentas c
-            JOIN clientes cl ON c.id_cliente = cl.id_cliente
-            WHERE cl.id_cliente = %s
-        """, (cliente_id,))
-        return cursor.fetchone()
-    finally:
-        cursor.close()
-        conn.close()
+        # Usar el servicio que ya tienes implementado
+        return CuentaService.get_info_cuenta(cuenta_id)
+    except Exception as e:
+        print(f"Error al obtener información de la cuenta: {e}")
+        return None
 
-def get_recent_transactions(cliente_id):
-    """Obtiene las últimas transacciones del cliente"""
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+def get_recent_transactions(cuenta_id, limit=5):
+    """Obtiene las transacciones recientes usando el servicio existente"""
     try:
-        cursor.execute("""
-            SELECT t.* FROM transaccion t
-            JOIN cuentas c ON t.id_cuenta_origen = c.id_cuenta
-            WHERE c.id_cliente = %s
-            ORDER BY t.fecha_transaccion DESC LIMIT 5
-        """, (cliente_id,))
-        return cursor.fetchall()
-    finally:
-        cursor.close()
-        conn.close()
+        # Usar el servicio que ya tienes implementado
+        transactions = CuentaService.obtener_transacciones_recientes(cuenta_id, limit)
+        
+        # Como el servicio devuelve objetos de SQLAlchemy Row, los convertimos a diccionarios
+        schema = TransaccionResumenSchema(many=True)
+        return schema.dump(transactions)
+    except Exception as e:
+        print(f"Error al obtener transacciones recientes: {e}")
+        return []
 
-def get_financial_context(cliente_id):
-    """Obtiene y formatea la información financiera del cliente"""
+def get_financial_context(cuenta_id):
+    """Obtiene y formatea la información financiera del cliente usando servicios"""
     try:
-        account_info = get_account_info(cliente_id)
-        transactions = get_recent_transactions(cliente_id)
+        account_info = get_account_info(cuenta_id)
+        transactions = get_recent_transactions(cuenta_id)
         
         if not account_info:
             return "No se encontró información de la cuenta."
 
         # Formatear la información de manera segura y estructurada
         context = {
-            "nombre_cliente": f"{account_info['nombre']} {account_info['apellido']}",
+            "nombre_cliente": account_info['nombre_usuario'],
             "saldo": format_money(account_info['saldo_actual']),
             "ultimas_transacciones": []
         }
 
         if transactions:
             for t in transactions:
-                # Verificar si existe tipo_transaccion y usar un valor por defecto si no
-                tipo = t.get('tipo_transaccion', 'Transacción')
-                
                 context["ultimas_transacciones"].append({
                     "monto": format_money(t['monto']),
-                    "fecha": t['fecha_transaccion'].strftime("%d/%m/%Y"),
-                    "tipo": tipo
+                    "fecha": t['fecha_transaccion'].strftime("%d/%m/%Y") if hasattr(t['fecha_transaccion'], 'strftime') else t['fecha_transaccion'],
+                    "tipo": t['tipo_transaccion']
                 })
 
         return context
@@ -74,7 +65,7 @@ def get_financial_context(cliente_id):
         print(f"Error al obtener contexto financiero: {e}")
         return None
 
-def get_chatbot_response(prompt, cliente_id=None):
+def get_chatbot_response(prompt, cuenta_id=None):
     api_key = os.getenv('API_DEEPSEEK_KEY')
     if not api_key:
         return "Error de configuración: No se encontró la clave API."
@@ -85,7 +76,7 @@ def get_chatbot_response(prompt, cliente_id=None):
     }
 
     # Obtener contexto financiero
-    financial_context = get_financial_context(cliente_id) if cliente_id else None
+    financial_context = get_financial_context(cuenta_id) if cuenta_id else None
     
     # Crear el mensaje del sistema
     system_message = """Eres WALLI, el asistente financiero virtual de WALLI WALLET. 

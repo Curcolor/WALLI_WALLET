@@ -22,6 +22,7 @@ def send_message():
         logger.debug(f"Usuario autenticado con ID: {current_user.id_cuenta}")
         logger.debug(f"Mensaje recibido: {user_input}")
         
+        # Ahora pasamos el ID de la cuenta directamente
         response_text = get_chatbot_response(user_input, current_user.id_cuenta)
         
         return jsonify({

@@ -6,14 +6,13 @@ class ClienteSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Cliente
         
-    id_cliente = ma.auto_field()
-    nombre = ma.auto_field()
-    apellido = ma.auto_field()
-    documento_identidad = ma.auto_field()
-    correo_electronico = ma.auto_field()
-    fecha_nacimiento = fields.Date('%Y-%m-%d')
-    fecha_registro = fields.DateTime('%Y-%m-%d %H:%M:%S')
-    nombre_completo = fields.Method('get_nombre_completo')
-    
+    id_cliente = fields.Int(dump_only=True)
+    nombre = fields.Str(required=True)
+    apellido = fields.Str(required=True)
+    documento_identidad = fields.Str(required=True)
+    correo_electronico = fields.Email(required=True)
+    fecha_nacimiento = fields.Date(format='%Y-%m-%d')
+    fecha_registro = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+   
     def get_nombre_completo(self, obj):
         return f"{obj.nombre} {obj.apellido}"

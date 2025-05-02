@@ -1,4 +1,3 @@
-from app.connection_database import get_db_connection
 from app.extensions import db
 from datetime import datetime
 from app.utils.encryption import decrypt_data
@@ -13,7 +12,6 @@ class Transaccion(db.Model):
     fecha_transaccion = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     canal = db.Column(db.String(50), default='web', nullable=False)
     estado = db.Column(db.String(20), default='completado', nullable=False)
-    descripcion = db.Column(db.String(255), nullable=True)
     
     # Relaciones
     cuenta_origen = db.relationship('Cuenta', foreign_keys=[id_cuenta_origen], back_populates='transferencias_enviadas')

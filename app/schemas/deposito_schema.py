@@ -6,9 +6,9 @@ class DepositoSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Deposito
         
-    id_deposito = ma.auto_field()
-    id_cuenta = ma.auto_field()
+    id_deposito = fields.Int()
+    id_cuenta = fields.Int()
     monto = fields.Decimal(as_string=True)
     fecha_deposito = fields.DateTime('%Y-%m-%d %H:%M:%S')
-    canal = ma.auto_field()
-    estado = ma.auto_field()
+    canal = fields.String()
+    estado = fields.String()

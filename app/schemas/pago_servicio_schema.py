@@ -6,10 +6,10 @@ class PagoServicioSchema(ma.SQLAlchemySchema):
     class Meta:
         model = PagoServicio
         
-    id_pago = ma.auto_field()
-    id_cuenta = ma.auto_field()
-    id_servicio = ma.auto_field()
+    id_pago = fields.Int()
+    id_cuenta = fields.Int()
+    id_servicio = fields.Int()
     monto = fields.Decimal(as_string=True)
-    fecha_pago = fields.DateTime('%Y-%m-%d %H:%M:%S')
-    referencia = ma.auto_field()
-    estado = ma.auto_field()
+    fecha_pago = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+    referencia = fields.String()
+    estado = fields.String()

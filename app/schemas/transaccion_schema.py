@@ -6,11 +6,10 @@ class TransaccionSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Transaccion
         
-    id_transaccion = ma.auto_field()
-    id_cuenta_origen = ma.auto_field()
-    id_cuenta_envio = ma.auto_field()
+    id_transaccion = fields.Int()
+    id_cuenta_origen = fields.Int()
+    id_cuenta_envio = fields.Int()
     monto = fields.Decimal(as_string=True)
-    fecha_transaccion = fields.DateTime('%Y-%m-%d %H:%M:%S')
-    canal = ma.auto_field()
-    estado = ma.auto_field()
-    descripcion = ma.auto_field()
+    fecha_transaccion = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+    canal = fields.String()
+    estado = fields.String()

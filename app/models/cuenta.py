@@ -22,12 +22,8 @@ class Cuenta(db.Model, UserMixin):
     depositos = db.relationship('Deposito', back_populates='cuenta')
     retiros = db.relationship('Retiro', back_populates='cuenta')
     pagos_servicios = db.relationship('PagoServicio', back_populates='cuenta')
-    transferencias_enviadas = db.relationship('Transaccion', 
-                                            foreign_keys='Transaccion.id_cuenta_origen',
-                                            back_populates='cuenta_origen')
-    transferencias_recibidas = db.relationship('Transaccion', 
-                                             foreign_keys='Transaccion.id_cuenta_envio',
-                                             back_populates='cuenta_destino')
+    transferencias_enviadas = db.relationship('Transaccion', foreign_keys='Transaccion.id_cuenta_origen', back_populates='cuenta_origen')
+    transferencias_recibidas = db.relationship('Transaccion', foreign_keys='Transaccion.id_cuenta_envio', back_populates='cuenta_destino')
     
     def get_id(self):
         return str(self.id_cuenta)
