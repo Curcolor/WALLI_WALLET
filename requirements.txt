@@ -1,11 +1,25 @@
+# This file is used to install the dependencies for the project.
+# flask dependencies
 Flask
-mysql-connector-python
-python-dotenv
-Werkzeug
 flask_login
 Flask-WTF
+marshmallow
+
+# database dependencies
+flask-sqlalchemy
+flask-marshmallow
+
+# security dependencies
+Werkzeug
 email-validator
 cryptography.fernet
 cryptography
+
+# iapi dependencies
 deepseek-ai
 requests
+python-dotenv
+
+# Testing dependencies
+pytest 
+pytest-cov

@@ -1,7 +1,7 @@
-from flask import Blueprint, request, jsonify, current_app, session
-from flask_login import current_user, login_required
-from app.models.deposito import deposito
-from app.connection_database import get_db_connection
+from flask import Blueprint, jsonify, request
+from flask_login import login_required, current_user
+from app.services.deposito_service import DepositoService
+from app.schemas.deposito_schema import DepositoSchema
 
 bp = Blueprint('deposito', __name__, url_prefix='/api/deposito')
 
@@ -9,47 +9,41 @@ bp = Blueprint('deposito', __name__, url_prefix='/api/deposito')
 @login_required
 def crear_deposito():
     try:
-        datos = request.get_json()
-        monto = float(datos.get('monto', 0))
+        data = request.get_json()
+        monto = float(data.get('monto', 0))
         
-        if monto < 1000:
-            return jsonify({'error': 'El monto mínimo de depósito es $1.000'}), 400
+        if monto <= 0:
+            return jsonify({'error': 'El monto debe ser mayor a cero'}), 400
             
-        deposito_id = deposito.crear_deposito(
-            id_cuenta=current_user.id,
+        deposito = DepositoService.crear_deposito(
+            cuenta_id=current_user.id_cuenta,
             monto=monto
         )
         
-        # Obtener el nuevo saldo después del depósito
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("""
-            SELECT saldo_actual FROM cuentas WHERE id_cuenta = %s
-        """, (current_user.id,))
-        nuevo_saldo = cursor.fetchone()['saldo_actual']
-        cursor.close()
-        conn.close()
+        schema = DepositoSchema()
+        result = schema.dump(deposito)
         
         return jsonify({
-            'mensaje': 'Depósito realizado exitosamente',
-            'deposito_id': deposito_id,
-            'nuevo_saldo': float(nuevo_saldo)
+            'deposito': result,
+            'mensaje': 'Depósito realizado con éxito'
         }), 201
-        
+    
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Error en depósito: {str(e)}")
+        print(f"Error en depósito: {str(e)}")
         return jsonify({'error': 'Error al procesar el depósito'}), 500
 
-@bp.route('/listar', methods=['GET'])
-def listar_depositos():
+@bp.route('/historial', methods=['GET'])
+@login_required
+def historial_depositos():
     try:
-        cliente_id = session.get('cliente_id')
-        if not cliente_id:
-            return jsonify({'error': 'No autorizado'}), 401
-            
-        depositos = deposito.obtener_depositos_por_cliente(cliente_id)
-        return jsonify({'depositos': depositos}), 200
+        depositos = DepositoService.obtener_depositos_por_cuenta(current_user.id_cuenta)
+        
+        schema = DepositoSchema(many=True)
+        result = schema.dump(depositos)
+        
+        return jsonify(result)
     except Exception as e:
-        return jsonify({'error': str(e)}), 400 
+        print(f"Error al obtener historial: {str(e)}")
+        return jsonify({'error': 'Error al obtener el historial de depósitos'}), 500
