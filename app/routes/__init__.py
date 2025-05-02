@@ -6,7 +6,7 @@ from .servicio_route import bp as servicio_bp
 from .pago_servicio__route import bp as pago_servicio_bp
 from .cuenta_route import bp as cuenta_bp
 from .transferencia_route import bp as transferencia_bp
-from .api_routes import bp as api_bp
+from .recent_transferencia_route import bp as api_bp
 from .walli_route import bp as walli_bp
 
 blueprints = [
