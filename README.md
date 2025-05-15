@@ -15,6 +15,10 @@ Walli es una aplicación web que permite a los usuarios realizar transferencias,
 
 ### Scripts de instalación y ejecución para el proyecto Walli en Flask
 
+### Wiki del Repositorio
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Curcolor/WALLI_WALLET)
+
 Este repositorio en caso de no tener instalado el entorno virtual, python, flask, mysql, etc. contiene un script shell para gestionar el ciclo de vida de la pagina web Walli en Flask con una base de datos en MySQL80.
 
 #### Descripción del Script
