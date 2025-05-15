@@ -1,49 +1,58 @@
-from flask import Blueprint, request, jsonify, session
-from app.models.pago_servicio import PagoServicio
+from flask import Blueprint, request, jsonify
+from flask_login import login_required, current_user
+from app.services.cuenta_service import CuentaService
+from app.services.servicio_service import ServicioService
+from app.schemas.servicio_schema import ServicioSchema
 
 bp = Blueprint('pago_servicio', __name__, url_prefix='/api/pago-servicio')
 
 @bp.route('/listar', methods=['GET'])
+@login_required
 def listar_pagos():
     try:
-        # Obtener el ID del cliente de la sesión
-        cliente_id = session.get('cliente_id')
-        if not cliente_id:
-            return jsonify({'error': 'No autorizado'}), 401
-
-        pagos = PagoServicio.obtener_pagos_por_cliente(cliente_id)
+        pagos = CuentaService.obtener_pagos_por_cliente(current_user.id_cuenta)
         return jsonify({'pagos': pagos}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@bp.route('/servicios', methods=['GET'])
+@login_required
+def listar_servicios():
+    try:
+        servicios = ServicioService.get_all_servicios()
+        schema = ServicioSchema(many=True)
+        return jsonify(schema.dump(servicios))
+    except Exception as e:
+        print(f"Error al obtener servicios: {str(e)}")
+        return jsonify({'error': 'Error al obtener los servicios'}), 500
+
 @bp.route('/crear', methods=['POST'])
+@login_required
 def crear_pago():
     try:
-        datos = request.get_json()
+        data = request.get_json()
+        servicio_id = int(data.get('servicio_id', 0))
+        monto = float(data.get('monto', 0))
+        referencia = data.get('referencia', None)
         
-        # Validar que los datos necesarios estén presentes
-        if not all(key in datos for key in ['cuenta_id', 'servicio_id', 'monto']):
-            return jsonify({'error': 'Faltan datos requeridos'}), 400
+        if servicio_id <= 0 or monto <= 0:
+            return jsonify({'error': 'Datos incompletos o inválidos'}), 400
             
-        # Convertir el monto a float
-        try:
-            monto = float(datos['monto'])
-        except ValueError:
-            return jsonify({'error': 'El monto debe ser un número válido'}), 400
-
-        pago_id = PagoServicio.crear_pago(
-            cuenta_id=datos['cuenta_id'],
-            servicio_id=datos['servicio_id'],
-            monto=monto
+        resultado = CuentaService.pagar_servicio(
+            cuenta_id=current_user.id_cuenta,
+            servicio_id=servicio_id,
+            monto=monto,
+            referencia=referencia
         )
         
         return jsonify({
-            'mensaje': 'Pago realizado exitosamente',
-            'pago_id': pago_id
+            'id_pago': resultado['id_pago'],
+            'nuevo_saldo': resultado['nuevo_saldo'],
+            'mensaje': 'Pago realizado con éxito'
         }), 201
-        
+    
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
     except Exception as e:
-        print(f"Error en crear_pago: {str(e)}")  # Para debugging
+        print(f"Error en pago: {str(e)}")
         return jsonify({'error': 'Error al procesar el pago'}), 500

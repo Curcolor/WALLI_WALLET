@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from app.models import Cliente, Cuenta
 from app.forms.auth_forms import LoginForm, RegistroForm
+from app.services.auth_service import AuthService
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -13,17 +13,17 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         try:
-            print("Datos del formulario:", form.numero_telefono_ingreso.data, form.clave_ingreso.data)  # Registro de depuración
-            cuenta = Cuenta.verificar_login(
+            cuenta = AuthService.login(
                 form.numero_telefono_ingreso.data,
                 form.clave_ingreso.data
             )
+            
             if cuenta:
-                print("Cuenta encontrada:", cuenta)  # Registro de depuración
-                cuenta_obj = Cuenta.get(cuenta['id_cuenta'])
-                login_user(cuenta_obj)
-                return redirect(url_for('viewpages.dashboard'))
-            flash('Teléfono o clave incorrectos', 'error')
+                login_user(cuenta)
+                next_page = request.args.get('next')
+                return redirect(next_page or url_for('viewpages.dashboard'))
+            else:
+                flash('Teléfono o clave incorrectos', 'error')
         except Exception as e:
             flash(str(e), 'error')
     
@@ -37,7 +37,7 @@ def registro():
     form = RegistroForm()
     if form.validate_on_submit():
         try:
-            cliente_id = Cliente.crear_cliente_con_cuenta(
+            cliente_id = AuthService.register(
                 nombre=form.nombre.data,
                 apellido=form.apellido.data,
                 documento_identidad=form.documento_identidad.data,

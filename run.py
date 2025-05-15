@@ -1,6 +1,9 @@
 from app import create_app
+import os
 
-app = create_app()
+# Determinar el entorno de ejecución
+env = os.environ.get('FLASK_ENV', 'development')
+app = create_app(env)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5050, debug=True) 
+    app.run(debug=app.config['DEBUG'])

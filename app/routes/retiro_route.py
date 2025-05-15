@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify, render_template, session
+from flask_login import login_required, current_user
+from app.services.cuenta_service import CuentaService
 from app.models.retiro import Retiro
 from app.models.cuenta import Cuenta
-from flask_login import login_required, current_user
 
 bp = Blueprint('retiro', __name__, url_prefix='/api/retiro')
 
@@ -42,29 +43,26 @@ def listar_retiros():
 @login_required
 def retirar():
     try:
-        datos = request.get_json()
-        monto = float(datos.get('monto', 0))
-        cuenta_id = current_user.id
+        data = request.get_json()
+        monto = float(data.get('monto', 0))
         
         if monto <= 0:
-            return jsonify({'error': 'El monto debe ser positivo'}), 400
-        
-        # Crear el retiro usando la clase Retiro
-        retiro_id = Retiro.crear_retiro(cuenta_id, monto)
-        
-        # Obtener el nuevo saldo después del retiro
-        nuevo_saldo = Cuenta.obtener_saldo(cuenta_id)
+            return jsonify({'error': 'El monto debe ser mayor a cero'}), 400
+            
+        resultado = CuentaService.realizar_retiro(
+            cuenta_id=current_user.id_cuenta,
+            monto=monto
+        )
         
         return jsonify({
-            'mensaje': 'Retiro realizado con éxito',
-            'monto': monto,
-            'nuevo_saldo': nuevo_saldo,
-            'retiro_id': retiro_id
-        }), 200
-        
+            'id_retiro': resultado['id_retiro'],
+            'codigo_retiro': resultado['codigo_retiro'],
+            'nuevo_saldo': resultado['nuevo_saldo'],
+            'mensaje': 'Retiro realizado con éxito'
+        }), 201
+    
     except ValueError as e:
-        print(f"Error de validación: {str(e)}")
         return jsonify({'error': str(e)}), 400
     except Exception as e:
         print(f"Error en retiro: {str(e)}")
-        return jsonify({'error': 'Error al procesar el retiro'}), 500 
+        return jsonify({'error': 'Error al procesar el retiro'}), 500

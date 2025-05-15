@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página no encontrada</title>
+    <title>Acceso denegado</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='imgs/walli_logo.ico') }}">
@@ -14,9 +14,9 @@
         <div class="robot-avatar">
             <div class="robot-eyes"></div>
         </div>
-        <h1>404</h1>
-        <h2>¡Ups! Página no encontrada</h2>
-        <p>Lo sentimos, WALLI no puede encontrar la página que estás buscando. ¿Quieres volver al inicio para seguir utilizando tus servicios?</p>
+        <h1>403</h1>
+        <h2>Acceso denegado</h2>
+        <p>Lo sentimos, WALLI no puede permitirte acceder a esta página porque no tienes los permisos necesarios.</p>
         <a href="{{ url_for('viewpages.index') }}" class="btn btn-primary">
             <i class="fas fa-home"></i> Volver al inicio
         </a>

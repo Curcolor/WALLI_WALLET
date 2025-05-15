@@ -32,9 +32,11 @@ async function loadRecentTransactions() {
         const transactions = await response.json();
         
         const transactionsList = document.getElementById('recentTransactions');
+        if (!transactionsList) return;
+        
         transactionsList.innerHTML = ''; // Limpiar la lista actual
         
-        if (transactions.length === 0) {
+        if (!transactions || transactions.length === 0) {
             transactionsList.innerHTML = `
                 <div class="no-transactions">
                     <p>No hay transacciones recientes</p>
@@ -44,7 +46,9 @@ async function loadRecentTransactions() {
         }
 
         transactions.forEach(transaction => {
+            // ADAPTACIÓN: Usar estructura exacta del schema
             const type = transaction.tipo_transaccion.toLowerCase();
+            
             // Determinar si el monto debe mostrarse como positivo o negativo
             let isPositive = false;
             
@@ -54,14 +58,14 @@ async function loadRecentTransactions() {
                 isPositive = false;
             } else if (type === 'transferencia') {
                 // Para transferencias, es positivo si es recibida y negativo si es enviada
-                isPositive = transaction.descripcion.includes('recibida');
+                isPositive = transaction.descripcion?.includes('recibida') || false;
             }
             
             // Formatear el monto como moneda
             const amount = new Intl.NumberFormat('es-CO', {
                 style: 'currency',
                 currency: 'COP'
-            }).format(Math.abs(transaction.monto));
+            }).format(Math.abs(parseFloat(transaction.monto)));
 
             // Determinar el icono adecuado
             let iconClass = '';
@@ -73,7 +77,7 @@ async function loadRecentTransactions() {
                     iconClass = 'fa-minus-circle';
                     break;
                 case 'transferencia':
-                    iconClass = transaction.descripcion.includes('recibida') ? 
+                    iconClass = transaction.descripcion?.includes('recibida') ? 
                         'fa-arrow-down' : 'fa-arrow-up';
                     break;
                 case 'servicio':
@@ -83,42 +87,48 @@ async function loadRecentTransactions() {
                     iconClass = 'fa-exchange-alt';
             }
 
-            const transactionHtml = `
-                <div class="transaction-item">
-                    <div class="transaction-icon ${type}">
-                        <i class="fas ${iconClass}"></i>
-                    </div>
-                    <div class="transaction-details">
-                        <h4 class="transaction-title">${transaction.descripcion}</h4>
-                        <span class="transaction-date">${new Date(transaction.fecha_transaccion).toLocaleDateString('es-CO', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        })}</span>
-                    </div>
-                    <div class="transaction-amount ${isPositive ? 'positive' : 'negative'}">
-                        ${isPositive ? '+' : '-'} ${amount}
-                    </div>
+            // Formatear fecha
+            const date = new Date(transaction.fecha_transaccion);
+            const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+            // Crear elemento de transacción
+            const transactionItem = document.createElement('div');
+            transactionItem.className = 'transaction-item';
+            transactionItem.innerHTML = `
+                <div class="transaction-icon ${isPositive ? 'income' : 'expense'}">
+                    <i class="fas ${iconClass}"></i>
+                </div>
+                <div class="transaction-info">
+                    <div class="transaction-title">${transaction.descripcion || type}</div>
+                    <div class="transaction-date">${formattedDate}</div>
+                </div>
+                <div class="transaction-amount ${isPositive ? 'income-text' : 'expense-text'}">
+                    ${isPositive ? '+' : '-'} ${amount}
                 </div>
             `;
             
-            transactionsList.insertAdjacentHTML('beforeend', transactionHtml);
+            transactionsList.appendChild(transactionItem);
         });
+        
     } catch (error) {
-        console.error('Error al cargar las transacciones:', error);
-        document.getElementById('recentTransactions').innerHTML = `
-            <div class="error-message">
-                <p>Error al cargar las transacciones</p>
-            </div>
-        `;
+        console.error('Error al cargar transacciones:', error);
+        const transactionsList = document.getElementById('recentTransactions');
+        if (transactionsList) {
+            transactionsList.innerHTML = `
+                <div class="alert alert-danger">
+                    Error al cargar transacciones recientes.
+                </div>
+            `;
+        }
     }
 }
 
-// Cargar transacciones al iniciar
+// Cargar datos al iniciar
 document.addEventListener('DOMContentLoaded', () => {
+    refreshBalance();
     loadRecentTransactions();
-    // Actualizar cada 30 segundos
-    setInterval(loadRecentTransactions, 30000);
+    
+    // Actualizar periódicamente
+    setInterval(refreshBalance, 30000);  // Cada 30 segundos
+    setInterval(loadRecentTransactions, 60000);  // Cada minuto
 });

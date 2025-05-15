@@ -1,293 +1,53 @@
+from app.extensions import db, login_manager
+from datetime import datetime
 from flask_login import UserMixin
-from app.connection_database import get_db_connection
+from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.ext.hybrid import hybrid_property
 from app.utils.encryption import encrypt_data, decrypt_data
 
-class Cuenta(UserMixin):
-    def __init__(self, id=None, id_cliente=None, saldo_actual=0.00, tipo_cuenta='ahorro', 
-                 clave_ingreso=None, numero_telefono_ingreso=None, estado='activa'):
-        self.id = id
-        self.id_cliente = id_cliente
-        self.saldo_actual = saldo_actual
-        self.tipo_cuenta = tipo_cuenta
-        self.clave_ingreso = clave_ingreso
-        self.numero_telefono_ingreso = numero_telefono_ingreso
-        self.estado = estado
-
-    def get_id(self):
-        return str(self.id)
+class Cuenta(db.Model, UserMixin):
+    __tablename__ = 'cuentas'
     
-    def ver_datos_encriptados(self):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        try:
-            cursor.execute("""
-                SELECT id_cuenta, id_cliente, clave_ingreso, numero_telefono_ingreso 
-                FROM cuentas
-            """)
-            cuentas = cursor.fetchall()
-            
-            print("\n=== DATOS DE cuentas ===")
-            for cuenta in cuentas:
-                print(f"\nCuenta ID: {cuenta['id_cuenta']}")
-                print(f"Cliente ID: {cuenta['id_cliente']}")
-                print("\nDatos Encriptados:")
-                print(f"Teléfono: {cuenta['numero_telefono_ingreso']}")
-                print(f"Clave: {cuenta['clave_ingreso']}")
-                
-                # Mostrar datos desencriptados
-                try:
-                    print("\nDatos Desencriptados:")
-                    print(f"Teléfono: {decrypt_data(cuenta['numero_telefono_ingreso'])}")
-                    print(f"Clave: {decrypt_data(cuenta['clave_ingreso'])}")
-                except Exception as e:
-                    print(f"Error al desencriptar: {str(e)}")
-                print("-" * 50)
-                
-        except Exception as e:
-            print(f"Error: {str(e)}")
-        finally:
-            cursor.close()
-            conn.close()
-
-    @staticmethod
-    def verificar_login(numero_telefono, clave):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        try:
-            # Obtener todas las cuentas
-            cursor.execute("SELECT id_cuenta, clave_ingreso, numero_telefono_ingreso FROM cuentas")
-            cuentas = cursor.fetchall()
-
-            cuenta_test = Cuenta()
-            cuenta_test.ver_datos_encriptados()
-            
-            for cuenta in cuentas:
-                try:
-                    # Desencriptar y comparar el número de teléfono
-                    telefono_desencriptado = decrypt_data(cuenta['numero_telefono_ingreso'])
-
-                    if telefono_desencriptado == numero_telefono:
-                        # Si el teléfono coincide, verificar la clave
-                        clave_desencriptada = decrypt_data(cuenta['clave_ingreso'])
-                        if clave == clave_desencriptada:
-                            return cuenta
-                except Exception as e:
-                    print(f"Error al desencriptar cuenta {cuenta['id_cuenta']}: {str(e)}")
-                    continue
-                
-            return None
-                
-        except Exception as e:
-            print(f"Error en verificar_login: {str(e)}")
-            raise e
-        finally:
-            cursor.close()
-            conn.close()
-
-    @staticmethod
-    def crear_cuenta(id_cliente, tipo_cuenta, clave_ingreso, numero_telefono_ingreso):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        try:
-            cursor.execute("""
-                INSERT INTO cuentas (id_cliente, tipo_cuenta, clave_ingreso, 
-                                   numero_telefono_ingreso, saldo_actual)
-                VALUES (%s, %s, %s, %s, 0)
-            """, (id_cliente, tipo_cuenta, clave_ingreso, numero_telefono_ingreso))
-            
-            conn.commit()
-            return cursor.lastrowid
-        finally:
-            cursor.close()
-            conn.close()
-
-    @staticmethod
-    def get(user_id):
-        if not user_id:
-            return None
-            
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        try:
-            cursor.execute("""
-                SELECT * FROM cuentas WHERE id_cuenta = %s
-            """, (user_id,))
-            
-            cuenta_data = cursor.fetchone()
-            print(f"Datos de cuenta obtenidos: {cuenta_data}")  # Debug
-            
-            if cuenta_data:
-                return Cuenta(
-                    id=cuenta_data['id_cuenta'],
-                    id_cliente=cuenta_data['id_cliente'],
-                    saldo_actual=cuenta_data['saldo_actual'],
-                    tipo_cuenta=cuenta_data['tipo_cuenta'],
-                    numero_telefono_ingreso=cuenta_data['numero_telefono_ingreso']
-                )
-            return None
-        finally:
-            cursor.close()
-            conn.close()
-
-    @staticmethod
-    def obtener_saldo(cuenta_id):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        try:
-            cursor.execute("""
-                SELECT saldo_actual 
-                FROM cuentas 
-                WHERE id_cuenta = %s
-            """, (cuenta_id,))
-            
-            resultado = cursor.fetchone()
-            print(f"Saldo obtenido: {resultado}")  # Debug
-            return float(resultado['saldo_actual']) if resultado else 0
-            
-        finally:
-            cursor.close()
-            conn.close()
-
-    @staticmethod
-    def retirar_dinero(cuenta_id, monto):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        try:
-            # Iniciar transacción
-            conn.start_transaction()
-            
-            # Verificar saldo disponible
-            cursor.execute("""
-                SELECT saldo_actual, estado 
-                FROM cuentas 
-                WHERE id_cuenta = %s 
-                FOR UPDATE
-            """, (cuenta_id,))
-            
-            cuenta_data = cursor.fetchone()
-            print(f"Datos de cuenta: {cuenta_data}")  # Debug
-            
-            if not cuenta_data:
-                raise ValueError("Cuenta no encontrada")
-            
-            saldo_actual = float(cuenta_data['saldo_actual'])
-            monto_retiro = float(monto)
-            
-            if saldo_actual < monto_retiro:
-                raise ValueError("Saldo insuficiente")
-            
-            nuevo_saldo = saldo_actual - monto_retiro
-            print(f"Calculando nuevo saldo: {saldo_actual} - {monto_retiro} = {nuevo_saldo}")  # Debug
-            
-            # Realizar el retiro
-            cursor.execute("""
-                UPDATE cuentas 
-                SET saldo_actual = %s 
-                WHERE id_cuenta = %s
-            """, (nuevo_saldo, cuenta_id))
-            
-            # Verificar que la actualización fue exitosa
-            if cursor.rowcount == 0:
-                raise Exception("No se pudo actualizar el saldo")
-            
-            conn.commit()
-            return nuevo_saldo
-            
-        except Exception as e:
-            conn.rollback()
-            print(f"Error en retirar_dinero: {str(e)}")  # Debug
-            raise e
-        finally:
-            cursor.close()
-            conn.close()
-
-    @staticmethod
-    def transferir_dinero(cuenta_origen_id, numero_telefono_destino, monto, descripcion=None):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        try:
-            # Iniciar transacción
-            conn.start_transaction()
-            
-            # Verificar cuenta origen y su saldo
-            cursor.execute("""
-                SELECT c.saldo_actual, c.estado, c.numero_telefono_ingreso 
-                FROM cuentas c
-                WHERE c.id_cuenta = %s 
-                FOR UPDATE
-            """, (cuenta_origen_id,))
-            
-            cuenta_origen = cursor.fetchone()
-            if not cuenta_origen:
-                raise ValueError("Cuenta origen no encontrada")
-            if cuenta_origen['estado'] != 'activa':
-                raise ValueError("Cuenta origen no está activa")
-            
-            # Evitar transferencia al mismo número
-            if cuenta_origen['numero_telefono_ingreso'] == numero_telefono_destino:
-                raise ValueError("No puedes transferir dinero a tu propia cuenta")
-            
-            # Verificar cuenta destino usando el número de teléfono
-            cursor.execute("""
-                SELECT id_cuenta, estado 
-                FROM cuentas 
-                WHERE numero_telefono_ingreso = %s 
-                FOR UPDATE
-            """, (numero_telefono_destino,))
-            
-            cuenta_destino = cursor.fetchone()
-            if not cuenta_destino:
-                raise ValueError("No se encontró una cuenta asociada a ese número de teléfono")
-            if cuenta_destino['estado'] != 'activa':
-                raise ValueError("La cuenta destino no está activa")
-            
-            cuenta_destino_id = cuenta_destino['id_cuenta']
-            
-            # Verificar saldo suficiente
-            saldo_actual = float(cuenta_origen['saldo_actual'])
-            monto_transferencia = float(monto)
-            
-            if saldo_actual < monto_transferencia:
-                raise ValueError("Saldo insuficiente para realizar la transferencia")
-            
-            # Realizar la transferencia
-            # Restar de la cuenta origen
-            cursor.execute("""
-                UPDATE cuentas 
-                SET saldo_actual = saldo_actual - %s 
-                WHERE id_cuenta = %s
-            """, (monto_transferencia, cuenta_origen_id))
-            
-            # Sumar a la cuenta destino
-            cursor.execute("""
-                UPDATE cuentas 
-                SET saldo_actual = saldo_actual + %s 
-                WHERE id_cuenta = %s
-            """, (monto_transferencia, cuenta_destino_id))
-            
-            # Registrar la transacción usando los nombres correctos de las columnas
-            cursor.execute("""
-                INSERT INTO transaccion 
-                (id_cuenta_origen, id_cuenta_envio, monto, fecha_transaccion, canal, estado) 
-                VALUES (%s, %s, %s, NOW(), 'web', 'completado')
-            """, (cuenta_origen_id, cuenta_destino_id, monto_transferencia))
-            
-            conn.commit()
-            
-            # Obtener nuevo saldo de la cuenta origen
-            cursor.execute("""
-                SELECT saldo_actual 
-                FROM cuentas 
-                WHERE id_cuenta = %s
-            """, (cuenta_origen_id,))
-            
-            nuevo_saldo = cursor.fetchone()['saldo_actual']
-            return float(nuevo_saldo)
-            
-        except Exception as e:
-            conn.rollback()
-            print(f"Error en transferir_dinero: {str(e)}")  # Debug
-            raise e
-        finally:
-            cursor.close()
-            conn.close()
+    id_cuenta = db.Column(db.Integer, primary_key=True)
+    id_cliente = db.Column(db.Integer, db.ForeignKey('clientes.id_cliente'), unique=True)
+    saldo_actual = db.Column(db.Numeric(10, 2), default=0.0, nullable=False)
+    tipo_cuenta = db.Column(db.String(50), nullable=False)
+    fecha_apertura = db.Column(db.DateTime, default=datetime.utcnow)
+    _clave_ingreso = db.Column('clave_ingreso', db.String(255), nullable=False)
+    _numero_telefono_ingreso = db.Column('numero_telefono_ingreso', db.String(255), nullable=False, unique=True)
+    estado = db.Column(db.String(20), default='activa')
+    
+    # Relaciones
+    cliente = db.relationship('Cliente', back_populates='cuenta')
+    depositos = db.relationship('Deposito', back_populates='cuenta')
+    retiros = db.relationship('Retiro', back_populates='cuenta')
+    pagos_servicios = db.relationship('PagoServicio', back_populates='cuenta')
+    transferencias_enviadas = db.relationship('Transaccion', foreign_keys='Transaccion.id_cuenta_origen', back_populates='cuenta_origen')
+    transferencias_recibidas = db.relationship('Transaccion', foreign_keys='Transaccion.id_cuenta_envio', back_populates='cuenta_destino')
+    
+    def get_id(self):
+        return str(self.id_cuenta)
+    
+    # Propiedad híbrida para clave de ingreso (ya está hasheada con werkzeug)
+    @hybrid_property
+    def clave_ingreso(self):
+        return self._clave_ingreso
+    
+    @clave_ingreso.setter
+    def clave_ingreso(self, clave):
+        self._clave_ingreso = generate_password_hash(clave)
+    
+    # Propiedad híbrida para número de teléfono (encriptado)
+    @hybrid_property
+    def numero_telefono_ingreso(self):
+        return decrypt_data(self._numero_telefono_ingreso)
+    
+    @numero_telefono_ingreso.setter
+    def numero_telefono_ingreso(self, telefono):
+        self._numero_telefono_ingreso = encrypt_data(telefono)
+    
+    def check_password(self, clave):
+        return check_password_hash(self._clave_ingreso, clave)
+    
+    def __repr__(self):
+        return f'<Cuenta {self.id_cuenta}>'

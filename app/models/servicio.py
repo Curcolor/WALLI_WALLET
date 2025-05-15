@@ -1,36 +1,16 @@
-from app.connection_database import get_db_connection
+from app.extensions import db
 
-class Servicio:
-    def __init__(self, id=None, nombre=None, descripcion=None, estado='ACTIVO'):
-        self.id = id
-        self.nombre = nombre
-        self.descripcion = descripcion
-        self.estado = estado
-
-    @staticmethod
-    def crear_servicio(nombre, descripcion):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        sql = """INSERT INTO servicios (nombre, descripcion, estado) 
-                VALUES (%s, %s, 'ACTIVO')"""
-        cursor.execute(sql, (nombre, descripcion))
-        
-        conn.commit()
-        servicio_id = cursor.lastrowid
-        
-        cursor.close()
-        conn.close()
-        return servicio_id
-
-    @staticmethod
-    def obtener_servicios():
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        
-        cursor.execute("SELECT * FROM servicios")
-        servicios = cursor.fetchall()
-        
-        cursor.close()
-        conn.close()
-        return servicios
+class Servicio(db.Model):
+    __tablename__ = 'servicios'
+    
+    id_servicio = db.Column(db.Integer, primary_key=True)
+    nombre_servicio = db.Column(db.String(255), nullable=False)
+    empresa = db.Column(db.String(255), nullable=True)
+    tipo_servicio = db.Column(db.String(50), nullable=True)
+    estado = db.Column(db.String(20), default='activo', nullable=False)
+    
+    # Relación
+    pagos = db.relationship('PagoServicio', back_populates='servicio')
+    
+    def __repr__(self):
+        return f'<Servicio {self.nombre_servicio}>'

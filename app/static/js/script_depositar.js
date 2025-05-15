@@ -45,10 +45,21 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.error) {
                 alert(data.error);
             } else {
-                alert('Depósito realizado con éxito');
-                // Actualizar el saldo con el valor devuelto por el servidor
-                document.getElementById('currentBalance').textContent = 
-                    data.nuevo_saldo.toLocaleString();
+                alert(data.mensaje || 'Depósito realizado con éxito');
+                
+                // Actualizar saldo
+                fetch('/api/cuenta/saldo')
+                    .then(resp => resp.json())
+                    .then(saldoData => {
+                        if (saldoData.saldo !== undefined) {
+                            const balanceElement = document.getElementById('currentBalance');
+                            if (balanceElement) {
+                                balanceElement.textContent = parseFloat(saldoData.saldo).toLocaleString('es-CO');
+                            }
+                        }
+                    })
+                    .catch(err => console.error('Error al actualizar saldo:', err));
+                
                 depositForm.reset();
             }
         })
@@ -65,4 +76,4 @@ document.addEventListener('DOMContentLoaded', function() {
     cancelButton.addEventListener('click', function() {
         modal.style.display = 'none';
     });
-}); 
+});

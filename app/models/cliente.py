@@ -1,53 +1,39 @@
-from app.connection_database import get_db_connection
+from app.extensions import db
+from datetime import datetime
+from sqlalchemy.ext.hybrid import hybrid_property
 from app.utils.encryption import encrypt_data, decrypt_data
 
-class Cliente:
-    @staticmethod
-    def crear_cliente_con_cuenta(**datos):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        try:
-            conn.start_transaction()
-            
-            # Encriptar datos sensibles
-            documento_encriptado = encrypt_data(datos['documento_identidad'])
-            correo_encriptado = encrypt_data(datos['correo_electronico'])
-            
-            cursor.execute("""
-                INSERT INTO clientes (nombre, apellido, documento_identidad, 
-                                    correo_electronico, fecha_nacimiento)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (
-                datos['nombre'],
-                datos['apellido'],
-                documento_encriptado,
-                correo_encriptado,
-                datos['fecha_nacimiento']
-            ))
-            
-            cliente_id = cursor.lastrowid
-            
-            # Encriptar datos de cuenta
-            clave_encriptada = encrypt_data(datos['clave_ingreso'])
-            telefono_encriptado = encrypt_data(datos['numero_telefono_ingreso'])
-            
-            cursor.execute("""
-                INSERT INTO cuentas (id_cliente, tipo_cuenta, clave_ingreso, 
-                                   numero_telefono_ingreso)
-                VALUES (%s, %s, %s, %s)
-            """, (
-                cliente_id,
-                datos['tipo_cuenta'],
-                clave_encriptada,
-                telefono_encriptado
-            ))
-            
-            conn.commit()
-            return cliente_id
-            
-        except Exception as e:
-            conn.rollback()
-            raise e
-        finally:
-            cursor.close()
-            conn.close()
+class Cliente(db.Model):
+    __tablename__ = 'clientes'
+    
+    id_cliente = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    apellido = db.Column(db.String(255), nullable=False)
+    _documento_identidad = db.Column('documento_identidad', db.String(255), nullable=False)
+    _correo_electronico = db.Column('correo_electronico', db.String(255), nullable=False)
+    fecha_nacimiento = db.Column(db.Date, nullable=False)
+    fecha_registro = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relación
+    cuenta = db.relationship('Cuenta', uselist=False, back_populates='cliente')
+    
+    # Propiedades híbridas para encriptar/desencriptar documento de identidad
+    @hybrid_property
+    def documento_identidad(self):
+        return decrypt_data(self._documento_identidad)
+    
+    @documento_identidad.setter
+    def documento_identidad(self, value):
+        self._documento_identidad = encrypt_data(value)
+    
+    # Propiedades híbridas para encriptar/desencriptar correo electrónico
+    @hybrid_property
+    def correo_electronico(self):
+        return decrypt_data(self._correo_electronico)
+    
+    @correo_electronico.setter
+    def correo_electronico(self, value):
+        self._correo_electronico = encrypt_data(value)
+    
+    def __repr__(self):
+        return f'<Cliente {self.nombre} {self.apellido}>'
