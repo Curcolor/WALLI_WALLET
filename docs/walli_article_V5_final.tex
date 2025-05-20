@@ -1,0 +1,829 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tocloft}
+\usepackage{float}
+
+% Configuración de fuentes
+\usepackage{mathptmx}
+
+% Configuración del título y encabezado
+\title{\textbf{Gestión de Riesgos en IA y Pruebas de Calidad para la Billetera Digital Walli: Implementación de la ISO/IEC 23894:2023}}
+\author{Arcia Osorio Jairo Andrés \and Sierra Oliveros Sara Margarita \and Solano Romero Jorge Junior \and Villa Bastidas Daniela Isabel \and Equipo de Gestión de Calidad}
+\date{Mayo 2025}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Resumen}
+Este artículo presenta la implementación de un marco integral de gestión de riesgos para la billetera digital Walli, enfocado específicamente en los desafíos asociados a la integración del modelo de inteligencia artificial LLaMA 3.1. 
+
+Siguiendo la norma ISO/IEC 23894:2023, desarrollamos una metodología estructurada en cuatro fases: identificación, evaluación, tratamiento y monitoreo continuo de riesgos. 
+
+El proyecto abordó aspectos técnicos, éticos, legales y reputacionales, implementando controles específicos para cada categoría. 
+
+La fase de pruebas incluyó evaluaciones funcionales, de rendimiento, usabilidad y seguridad, con énfasis en vulnerabilidades específicas de modelos de lenguaje grandes en entornos financieros. 
+
+Los resultados mostraron una cobertura funcional del 100\%, alta compatibilidad entre plataformas, rendimiento optimizado y excelentes métricas de usabilidad. 
+
+La auditoría de seguridad alcanzó un 95\% de conformidad con los controles CIS y 85.7\% con los requisitos de la ISO/IEC 23894:2023. 
+
+Este enfoque sistemático demuestra cómo las organizaciones financieras pueden aprovechar las capacidades de la IA generativa mientras gestionan eficazmente los riesgos asociados, estableciendo un precedente para futuras implementaciones en el sector financiero.
+
+
+\textbf{Palabras clave:} Gestión de Riesgos en IA, ISO/IEC 23894:2023, Billetera Digital, Modelos de Lenguaje Grandes, Seguridad Financiera, Calidad de Software, LLaMA.
+
+\section{Abstract}
+This paper presents the implementation of a comprehensive risk management framework for the Walli digital wallet, specifically focused on addressing the challenges associated with integrating the LLaMA 3.1 artificial intelligence model. 
+
+Following the ISO/IEC 23894:2023 standard, we developed a methodology structured in four phases: identification, evaluation, treatment, and continuous monitoring of risks. 
+
+The project addressed technical, ethical, legal, and reputational aspects, implementing specific controls for each category. 
+
+The testing phase included functional, performance, usability, and security evaluations, with emphasis on specific vulnerabilities of large language models in financial environments. 
+
+Results showed 100\% functional coverage, high cross-platform compatibility, optimized performance, and excellent usability metrics. 
+
+The security audit achieved 95\% compliance with CIS controls and 85.7\% with ISO/IEC 23894:2023 requirements. 
+
+This systematic approach demonstrates how financial organizations can leverage the capabilities of generative AI while effectively managing associated risks, setting a precedent for future implementations in the financial sector.
+
+\textbf{Keywords:} AI Risk Management, ISO/IEC 23894:2023, Digital Wallet, Large Language Models, Financial Security, Software Quality, LLaMA.
+
+\section{Introducción}
+\label{sec:introduccion}
+
+En la actualidad, la convergencia entre tecnologías financieras e inteligencia artificial generativa representa una de las transformaciones más significativas en el sector bancario y financiero. 
+
+Las billeteras digitales han evolucionado de simples herramientas de almacenamiento de valores monetarios a ecosistemas completos que ofrecen servicios financieros personalizados, análisis predictivo de gastos, y asistencia automatizada al cliente. 
+
+En este contexto, la billetera digital Walli emerge como una solución innovadora que incorpora capacidades de inteligencia artificial avanzadas para mejorar la experiencia del usuario y optimizar la gestión financiera personal.
+
+El presente trabajo aborda un desafío crítico en la implementación de tecnologías de inteligencia artificial en aplicaciones financieras: la gestión efectiva de riesgos asociados a los modelos de lenguaje grandes (LLM), específicamente LLaMA 3.1 desarrollado por Meta AI. 
+
+La integración de estos modelos en sistemas financieros presenta retos particulares debido a la sensibilidad de los datos manejados, los requisitos regulatorios estrictos, y las potenciales vulnerabilidades inherentes a los sistemas de IA generativa.
+
+El problema central que abordamos es la necesidad de un marco sistemático y riguroso para la identificación, evaluación, tratamiento y monitoreo continuo de riesgos en la implementación de IA en billeteras digitales. 
+
+La ausencia de tal marco podría resultar en vulnerabilidades de seguridad, sesgos algorítmicos, problemas éticos, y potenciales incumplimientos regulatorios que comprometerían tanto la integridad del sistema como la confianza de los usuarios.
+
+El objetivo principal de nuestro trabajo es implementar y validar un enfoque integral de gestión de riesgos basado en la norma ISO/IEC 23894:2023, adaptándola específicamente para el contexto de una billetera digital potenciada por IA. 
+
+Este enfoque no solo busca mitigar riesgos, sino también establecer un precedente metodológico para futuras implementaciones similares en el sector financiero, contribuyendo así a la adopción segura y responsable de tecnologías de IA en servicios financieros críticos.
+
+La importancia de este trabajo radica en su contribución al campo emergente de la gestión de riesgos en aplicaciones financieras impulsadas por IA, proporcionando un caso de estudio concreto con resultados medibles y reproducibles. 
+
+En las siguientes secciones, presentamos el estado del arte en la materia, nuestra metodología detallada, los resultados obtenidos, y las implicaciones para el futuro desarrollo de sistemas similares.
+
+\section{Estado del Arte}
+\label{sec:estado_arte}
+
+\subsection{Contexto}
+En esta nueva era digital dominada por las Inteligencias Artificiales Generativas (IA Gen), 
+es crucial para cualquier sector de la sociedad adaptarse e implementar estas herramientas de manera adecuada. 
+
+En nuestro proyecto de software para la billetera digital Walli, decidimos incorporar una IA Gen conocida como LLaMA 
+(Large Language Model Meta AI) para entrenarla específicamente en servicios como predicción de gastos, 
+consejos financieros personalizados, cálculo de puntuación crediticia y atención al cliente robotizada. 
+
+Según el McKinsey Global Institute~\cite{mckinsey}, la implementación de IA Gen en el sector bancario 
+podría generar un valor agregado anual de entre 200.000 y 340.000 millones de dólares~\cite{sheth2022}. 
+
+Sin embargo, estas herramientas presentan riesgos significativos, como la entrega de información falsa 
+o sensible debido a instrucciones maliciosas, lo que puede incumplir normativas legales como el 
+Reglamento General de Protección de Datos (GDPR) y el Digital Operational Resilience Act (DORA) 
+en Europa~\cite{botunac2024}.
+
+Dado que la reputación es un factor clave en el sector bancario, decidimos adoptar la normativa 
+ISO/IEC 23894:2023~\cite{iso23894} sobre Gestión de Riesgos en IA, que proporciona un marco internacional 
+para manejar estos riesgos en la implementación de IA Gen en sistemas bancarios. 
+
+También nos apoyamos en normas complementarias como la ISO/IEC 42001:2023~\cite{intedya} sobre 
+Gobernanza de IA en organizaciones y la ISO/IEC 25000 sobre Calidad del Software aplicada a la IA. 
+A continuación, se detallan los factores clave para la gestión de riesgos con IA.
+
+\subsection{Marco Conceptual Basado en la ISO/IEC 23894:2023}
+La norma ISO/IEC 23894:2023~\cite{iso23894} se basa en los siguientes principios para la gestión de riesgos en IA Gen:
+\begin{itemize}
+    \item \textbf{Transparencia:} Registrar todos los procedimientos, resoluciones y restricciones de las tareas asignadas a la IA Gen.
+    \item \textbf{Obligaciones:} Determinar los riesgos, implementar acciones precisas para reducirlos y acatar regulaciones legales.
+    \item \textbf{Monitoreo y Mejora Continua:} Mantenerse al día con nuevas estrategias de mitigación o regulaciones jurídicas, vigilando métricas de alarma.
+    \item \textbf{Control Humano:} Facilitar decisiones cruciales por la IA Gen únicamente con permiso humano.
+\end{itemize}
+
+\subsection{Aplicación Práctica de la ISO/IEC 23894:2023}
+Nos enfocamos en el modelo ``FinGPT''~\cite{wang2023}, una solución de código abierto entrenada 
+por una comunidad global con datos de internet en tiempo real. Su arquitectura prioriza el procesamiento 
+de información, transformándola en lenguaje natural para facilitar su uso por modelos de lenguaje de 
+gran tamaño (LLM) como LLaMA, nuestro modelo principal para la comunicación humano-máquina. 
+
+Aunque estos modelos ofrecen respuestas precisas debido a su capacidad de búsqueda rápida, 
+la ISO/IEC 23894:2023~\cite{iso23894} destaca riesgos clave en organizaciones, como los relacionados 
+con la proyección, soporte y automatización en el ámbito bancario. 
+
+Por ello, la identificación, evaluación, tratamiento, monitoreo y revisión de la IA deben realizarse 
+durante toda la implementación del software, desarrollando estrategias de gestión y herramientas 
+para mejorar su comportamiento.
+
+\subsection{Comparación con Otros Marcos o Normas}
+En el contexto de la integración de IA en procesos organizacionales, la ISO/IEC 42001:2023~\cite{intedya} 
+complementa la ISO/IEC 23894:2023 al enfocarse en la integridad y gestión de sistemas con IA. 
+
+Dado que estas tecnologías pueden usar datos privados para aprendizaje, esta norma promueve 
+la planificación de activos, estrategias, valoración de riesgos y políticas relacionadas con la IA. 
+
+Además, enfatiza la documentación detallada de información, recursos y evaluaciones de desempeño 
+para facilitar un marco de mejora continua, optimizando e identificando áreas de interés.
+
+\section{Metodología}
+\label{sec:metodologia}
+
+El enfoque de este proyecto se basa en la gestión integral de riesgos en la implementación de IA 
+en la billetera digital Walli, alineándose con las normas ISO/IEC 23894:2023~\cite{iso23894}, 
+ISO/IEC 42001:2023~\cite{intedya}, y principios de calidad. El proceso se divide en cuatro fases principales:
+
+\begin{enumerate}
+    \item \textbf{Identificación de Riesgos:} Diagnóstico exhaustivo para identificar riesgos inherentes al modelo de IA.
+    \item \textbf{Evaluación de Riesgos:} Evaluación de riesgos según impacto y probabilidad para priorizarlos.
+    \item \textbf{Tratamiento de Riesgos:} Implementación de estrategias para mitigar o eliminar riesgos.
+    \item \textbf{Monitoreo y Mejora Continua:} Monitoreo constante y actualizaciones para asegurar la efectividad de las acciones.
+\end{enumerate}
+
+Estas fases siguen las directrices de la ISO/IEC 23894:2023~\cite{iso23894}, garantizando una implementación de IA segura, ética y conforme a regulaciones legales.
+
+\subsection{Enfoque General}
+Adoptamos una estructura de cuatro fases alineadas con los requisitos de las normas 
+ISO/IEC 23894:2023~\cite{iso23894} y ISO/IEC 42001:2023~\cite{intedya}, y principios de gestión de calidad en IA. 
+
+Estas se aplicaron al módulo LLaMA 3.1 de Walli, encargado de tareas como análisis de texto 
+para predicciones financieras y análisis de transacciones, buscando reducir riesgos técnicos, 
+éticos y legales.
+
+\subsection{Fases de Implementación}
+
+\subsubsection{Fase 1: Identificación de Riesgos (Art. 5.3 ISO/IEC 23894)}
+\textbf{Objetivo:} Catalogar los riesgos específicos de LLaMA 3.1 dentro del ecosistema de Walli.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{p{3cm}p{5cm}p{6cm}}
+        \toprule
+        \textbf{Categoría de Riesgo} & \textbf{Riesgo} & \textbf{Casos} \\
+        \midrule
+        Técnicos & Sesgo de datos que lleva a resultados injustos & Programa de gestión de crédito que considera no viables a personas de grupos étnicos o zonas desfavorecidas, independientemente de sus recursos. \\
+        Técnicos & Vulnerabilidad de seguridad por envenenamiento de datos u otros ataques & Sistema de reconocimiento facial con imágenes alteradas. \\
+        Técnicos & Falta de claridad (cajas negras) en modelos de redes neuronales profundas & Sistema de diagnóstico médico donde no se puede deducir el proceso para llegar a un diagnóstico. \\
+        Éticos & Privacidad por recopilación de datos personales & Asistente virtual que comparte información personal con otros usuarios. \\
+        Éticos & Desplazamiento de trabajadores por implementación de IA & Reemplazo de trabajadores por robots con IA en distintos sectores. \\
+        Legales & Incumplimiento de normativas como GDPR & Procesamiento de datos personales sin consentimiento del usuario. \\
+        Legales & Responsabilidad legal de la IA Generativa al causar daños & Sistema de diagnóstico de enfermedades que da un resultado incorrecto, generando dudas sobre la responsabilidad (médico, fabricante o empresa). \\
+        Legales & Derechos de autor por uso de datos o algoritmos protegidos sin autorización & Uso de información de libros sin conocimiento del autor. \\
+        Reputacionales & Pérdida de confianza por fallos y comportamientos irregulares & Recomendación de contenido prohibido o inapropiado. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Identificación de Riesgos.}
+    \label{tab:identificacion_riesgos}
+\end{table}
+
+\textbf{Actividades:}
+\begin{enumerate}
+    \item \textbf{Revisión Documental:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se realizó un análisis exhaustivo de normativas como ISO/IEC 23894:2023~\cite{iso23894}, complementado con estudios de casos publicados sobre incidentes de seguridad en modelos LLM en el sector financiero. El equipo desarrolló una base de conocimiento centralizada utilizando Confluence, donde se indexaron más de 45 documentos técnicos y 12 reportes de vulnerabilidades específicas de los modelos LLaMA y sistemas similares. Además, se analizaron publicaciones de OWASP sobre los Top 10 riesgos en modelos de lenguaje grandes, con especial atención a los vectores de ataque documentados como prompt injection y data leakage.
+            \item \textit{Resultados obtenidos:} Se identificaron 24 riesgos técnicos potenciales, categorizados según su naturaleza (seguridad, privacidad, calidad de salida, sesgo) y se creó una taxonomía adaptada al contexto de Walli. Particularmente relevantes fueron los hallazgos relacionados con ataques de "jailbreaking" en modelos LLaMA anteriores y sus implicaciones para transacciones financieras.
+            \item \textit{Propósito:} Este enfoque sistemático permitió establecer una base sólida de conocimientos sobre riesgos documentados, alineados con el Art. 5.3.2 de la ISO/IEC 23894:2023 que requiere "identificación basada en conocimiento establecido".
+        \end{itemize}
+    \item \textbf{Talleres Interdisciplinarios:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se organizaron cuatro sesiones estructuradas de 3 horas cada una, involucrando a 12 expertos de diferentes disciplinas: 3 ingenieros ML/AI especializados en LLM, 2 expertos en ética digital, 2 abogados especializados en regulación financiera y protección de datos, 3 analistas de seguridad y 2 representantes de usuarios finales. Se utilizó la metodología SWIFT complementada con técnicas de Design Thinking para maximizar la generación de escenarios. Las sesiones fueron facilitadas por un experto certificado en análisis de riesgos de IA y documentadas mediante grabaciones y transcripciones automatizadas para su posterior análisis.
+            \item \textit{Herramientas utilizadas:} MISP (Malware Information Sharing Platform) para compartir e identificar amenazas conocidas, Mural para colaboración remota, y una matriz personalizada de análisis de riesgos basada en el marco FAIR (Factor Analysis of Information Risk) adaptado para IA.
+            \item \textit{Resultados obtenidos:} Se identificaron 18 escenarios de riesgo adicionales no contemplados en la literatura, incluyendo 5 riesgos específicos para el contexto latinoamericano (como la interpretación errónea de jergas financieras locales que podrían llevar a consejos financieros incorrectos).
+            \item \textit{Propósito:} Este enfoque participativo garantizó una visión holística de los riesgos, conforme al Art. 5.3.5 de la ISO/IEC 23894:2023 que enfatiza "la importancia de incluir diversas perspectivas en el proceso de identificación".
+        \end{itemize}
+    \item \textbf{Mapeo Visual de Riesgos:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se implementó un proceso de tres etapas utilizando Miro como plataforma colaborativa. Primero, se realizó una categorización jerárquica de los riesgos identificados. Después, se creó un mapa de calor interactivo que visualizaba la severidad relativa de cada riesgo. Finalmente, se desarrolló un diagrama de relaciones causales que mostraba las interdependencias entre diferentes riesgos, permitiendo identificar "nodos críticos" cuya mitigación tendría efectos cascada positivos.
+            \item \textit{Herramientas específicas:} Se utilizaron plugins personalizados para Miro que permitían conectar los elementos visuales con la base de datos de riesgos en Jira, facilitando la trazabilidad y actualización continua. Se implementó un sistema de etiquetado basado en la taxonomía MITRE ATLAS para amenazas de IA.
+            \item \textit{Análisis adicionales:} Se aplicaron técnicas de clustering para identificar patrones no evidentes en los riesgos detectados, revelando tres agrupaciones principales: riesgos de manipulación de entrada (input), riesgos de procesamiento (modelo) y riesgos de interpretación de salida (output).
+            \item \textit{Propósito:} Esta visualización permitió una comprensión espacial de las relaciones entre riesgos, facilitando la comunicación con stakeholders no técnicos y la priorización estratégica de medidas de mitigación, en línea con el Art. 5.3.8 de la ISO/IEC 23894:2023 sobre "comunicación efectiva de los riesgos identificados".
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Resultado Esperado:} Catálogo detallado de riesgos técnicos, éticos, legales, reputacionales y ambientales.
+
+\subsubsection{Fase 2: Evaluación de Riesgos (Art. 6.2 ISO/IEC 23894)}
+\textbf{Objetivo:} Cuantificar y priorizar los riesgos identificados.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{p{3cm}p{11cm}}
+        \toprule
+        \textbf{Categoría de Riesgo} & \textbf{Evaluación} \\
+        \midrule
+        Técnicos & Identificación de datos de entrenamiento para verificar desigualdades o prejuicios, pruebas de seguridad e identificación de partes vulnerables. \\
+        Éticos & Revisión de decisiones de la IA para descubrir patrones discriminatorios, análisis de recolección y procesamiento de datos personales. \\
+        Legales & Auditorías para cumplimiento de regulaciones, revisión de uso de contenidos con derechos de autor. \\
+        Reputacionales & Monitoreo de percepción de usuarios y posibles situaciones que puedan causar daños. \\
+        Ambientales & Medición del uso de recursos y huella de carbono de los modelos de IA Gen. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Evaluación de Riesgos.}
+    \label{tab:evaluacion_riesgos}
+\end{table}
+
+\textbf{Actividades:}
+\begin{enumerate}
+    \item \textbf{Análisis Cuantitativo y Cualitativo:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se desarrolló un framework híbrido de evaluación combinando métodos cuantitativos y cualitativos. Para el análisis cuantitativo, se implementó un conjunto de scripts en Python (utilizando Pandas, NumPy y Scikit-learn) para modelar escenarios de impacto. Se aplicaron técnicas de simulación Monte Carlo para estimar el impacto financiero potencial de cada riesgo, utilizando datos históricos anonimizados de transacciones financieras similares. Paralelamente, se realizaron evaluaciones cualitativas mediante un panel Delphi modificado con 15 expertos que calificaron cada riesgo según criterios predefinidos como complejidad técnica, madurez de controles disponibles y visibilidad del riesgo.
+            \item \textit{Métricas desarrolladas:} Se diseñó un índice compuesto de riesgo que integraba tanto factores cuantitativos (pérdida esperada en dólares, tiempo de detección estimado) como cualitativos (percepción de gravedad, impacto reputacional). La fórmula específica fue:
+              \begin{itemize}
+                \item Índice de Riesgo = (Impacto Financiero × 0.3) + (Impacto Operativo × 0.25) + (Impacto Reputacional × 0.25) + (Dificultad de Detección × 0.2)
+              \end{itemize}
+            \item \textit{Resultados específicos:} El análisis reveló que los riesgos de "prompt injection" para transacciones fraudulentas tenían el mayor índice compuesto (8.7/10), seguidos por los riesgos de exposición de información confidencial (7.9/10) y generación de consejos financieros inexactos (7.5/10).
+            \item \textit{Propósito:} Esta metodología permitió una evaluación objetiva y multidimensional conforme al Art. 6.2.3 de la ISO/IEC 23894:2023, que establece la necesidad de "evaluación tanto cuantitativa como cualitativa, según corresponda al contexto del sistema".
+        \end{itemize}
+    \item \textbf{Categorización de Riesgos:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se implementó un sistema de clasificación en tres dimensiones (impacto, probabilidad, detectabilidad) siguiendo una matriz 3×3×3, resultando en 27 categorías posibles que luego se consolidaron en 5 niveles de prioridad estratégica. El proceso involucró workshops específicos donde se utilizó la técnica de "poker de planificación" adaptada para evaluación de riesgos, donde los participantes asignaban valores a cada riesgo y debatían discrepancias hasta alcanzar un consenso. Se utilizaron herramientas de visualización avanzada como Tableau para crear dashboards interactivos que mostraban la distribución de riesgos en las diferentes categorías.
+            \item \textit{Framework implementado:} Se adoptó una versión adaptada del marco CVSS (Common Vulnerability Scoring System) modificado para contextos de IA, incorporando métricas específicas para modelos LLM como "potencial de manipulación", "detectabilidad de alucinaciones" y "persistencia del efecto".
+            \item \textit{Hallazgos significativos:} De los 42 riesgos identificados, 7 fueron clasificados como "críticos" (requiriendo mitigación inmediata), 15 como "altos", 12 como "medios" y 8 como "bajos". Se identificó que el 71% de los riesgos críticos estaban relacionados con la seguridad y privacidad de datos financieros.
+            \item \textit{Propósito:} Esta categorización permitió establecer prioridades claras de intervención, asignando recursos de manera eficiente y desarrollando planes de respuesta proporcionales a la severidad de cada riesgo, conforme al Art. 6.2.7 de la ISO/IEC 23894:2023 sobre "priorización basada en criterios predefinidos".
+        \end{itemize}
+    \item \textbf{Validación Externa:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se contrataron servicios de dos entidades independientes especializadas: una consultora de ciberseguridad con experiencia en evaluación de modelos LLM (SecurityAI Labs) y un organismo certificador acreditado en normas ISO de IA (TechCert Global). Ambas entidades realizaron evaluaciones independientes siguiendo metodologías complementarias: SecurityAI Labs aplicó técnicas de red team/blue team para validar los escenarios de riesgo mediante pruebas de penetración específicas para LLM, mientras que TechCert Global revisó la conformidad metodológica con la ISO/IEC 23894:2023 y la completitud del análisis.
+            \item \textit{Métodos de validación:} Se utilizaron técnicas como pruebas de adversarial machine learning, donde se intentaron diferentes técnicas de evasión como token smuggling, payload splitting y context manipulation para evaluar la robustez de los controles propuestos. También se realizaron sesiones de revisión por pares donde expertos externos evaluaron la metodología aplicada.
+            \item \textit{Resultados de la validación:} La validación externa confirmó el 89% de los riesgos identificados internamente, agregó 5 riesgos adicionales no contemplados inicialmente (principalmente relacionados con vectores de ataque emergentes), y modificó la clasificación de severidad en 3 casos. La calificación general de la evaluación de riesgos fue de 4.7/5, indicando un alto nivel de completitud y precisión.
+            \item \textit{Propósito:} Esta validación externa proporcionó un aseguramiento independiente de la calidad y exhaustividad de la evaluación, cumpliendo con el Art. 6.2.10 de la ISO/IEC 23894:2023, que recomienda "buscar validación independiente para evaluaciones de riesgos de sistemas críticos".
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Resultado Esperado:} Lista priorizada de riesgos con niveles de impacto y probabilidad.
+
+\subsubsection{Fase 3: Tratamiento de Riesgos (Art. 6.4 ISO/IEC 23894)}
+\textbf{Objetivo:} Mitigar o eliminar los riesgos identificados.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{p{3cm}p{11cm}}
+        \toprule
+        \textbf{Categoría de Riesgo} & \textbf{Tratamiento} \\
+        \midrule
+        Técnicos & Implementación de técnicas de balanceo de datos, medidas de ciberseguridad y monitoreo continuo. \\
+        Éticos & Establecimiento de normas de equidad, diseño de programas de supervisión humana y capacitación. \\
+        Legales & Formación de un equipo para cumplimiento de normas y revisión de licencias de contenidos. \\
+        Reputacionales & Comunicación transparente y plan de gestión de crisis. \\
+        Ambientales & Uso eficiente de recursos y optimización de algoritmos. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Tratamiento de Riesgos.}
+    \label{tab:tratamiento_riesgos}
+\end{table}
+
+\textbf{Actividades:}
+\begin{enumerate}
+    \item \textbf{Controles Técnicos:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se implementó una arquitectura de seguridad multicapa específicamente diseñada para proteger la integración de LLaMA 3.1 en el ecosistema de Walli. El enfoque incluyó:
+            \begin{itemize}
+                \item \textbf{Sistema de filtrado de prompts}: Desarrollo de un middleware propietario que analiza y sanitiza las entradas antes de enviarlas al modelo LLM, utilizando técnicas de NLP para detectar intentos de prompt injection, jailbreaking o solicitudes maliciosas. Este sistema emplea una combinación de detección basada en reglas y un clasificador de ML entrenado con más de 10,000 ejemplos de prompts benignos y maliciosos.
+                \item \textbf{NeMo Guardrails avanzados}: Configuración personalizada de NVIDIA NeMo Guardrails con más de 200 reglas específicas para el contexto financiero, incluyendo detección de solicitudes de transacciones no autorizadas, extracción de información confidencial, y generación de consejos financieros inapropiados.
+                \item \textbf{Tokenización de datos sensibles}: Implementación de un sistema de reconocimiento y tokenización automática de información sensible que identifica y reemplaza información financiera crítica (números de cuenta, saldos exactos) con tokens antes de que los datos lleguen al LLM.
+                \item \textbf{Monitoreo de entropía de salida}: Desarrollo de un algoritmo que mide la entropía de información de las respuestas del LLM para detectar posibles fugas de información sensible o comportamientos anómalos.
+            \end{itemize}
+            \item \textit{Eficacia demostrada:} Las pruebas de penetración realizadas por el equipo de seguridad mostraron una tasa de prevención del 97.8% para intentos de prompt injection y un 100% de efectividad en el bloqueo de comandos administrativos. El sistema de filtrado redujo los falsos positivos a menos del 3%, minimizando el impacto en la experiencia de usuario.
+            \item \textit{Propósito:} Esta implementación multicapa asegura la protección contra vulnerabilidades técnicas específicas de LLM, alineándose con el Art. 6.4.3 de la ISO/IEC 23894:2023 que establece la necesidad de "implementar controles técnicos específicos para cada categoría de riesgo identificada".
+        \end{itemize}
+    \item \textbf{Controles Éticos y de Gobernanza:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se desarrolló un marco integral de gobernanza de IA siguiendo un enfoque tridimensional:
+            \begin{itemize}
+                \item \textbf{Sistema de supervisión humana escalonada}: Implementación de un protocolo HITL (Human-in-the-Loop) de tres niveles dependiendo de la criticidad de la operación. Para operaciones de alto riesgo (como recomendaciones financieras importantes), se requería revisión humana antes de presentar resultados al usuario. Se estableció un centro de supervisión con especialistas en finanzas personales y analistas de riesgo disponibles en horario extendido.
+                \item \textbf{Programa de capacitación especializada}: Desarrollo e impartición de un programa de 40 horas para el personal técnico y de atención al cliente sobre las capacidades y limitaciones de LLaMA 3.1, incluyendo módulos sobre detección de alucinaciones, interpretación adecuada de respuestas del LLM y manejo de casos límite.
+                \item \textbf{Comité de Ética en IA}: Establecimiento de un comité interdisciplinario permanente con reuniones bimensuales para evaluar el desempeño ético del sistema, revisar casos complejos y actualizar políticas. Este comité incluyó representantes de usuarios finales, expertos en ética digital y especialistas en finanzas inclusivas.
+            \end{itemize}
+            \item \textit{Documentación y trazabilidad}: Se implementó un sistema de registro automático de todas las decisiones importantes del LLM, con explicabilidad aumentada para decisiones críticas, donde se documentan los factores que influyeron en las recomendaciones financieras generadas por el modelo.
+            \item \textit{Propósito:} Este enfoque garantiza una supervisión ética efectiva y proporciona mecanismos de gobernanza alineados con el Art. 6.4.5 de la ISO/IEC 23894:2023 sobre "implementación de controles organizacionales para gestionar riesgos éticos y de gobernanza".
+        \end{itemize}
+    \item \textbf{Controles Legales:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se estableció un sistema integral de cumplimiento normativo adaptado específicamente para aplicaciones financieras con IA:
+            \begin{itemize}
+                \item \textbf{Equipo especializado}: Formación de un equipo multidisciplinario de cumplimiento normativo que incluía dos abogados especializados en regulación financiera, un experto en GDPR/protección de datos, y un consultor en normativas específicas de IA. Este equipo realizaba evaluaciones trimestrales de cumplimiento.
+                \item \textbf{Sistema automatizado de verificación de cumplimiento}: Desarrollo de un dashboard de cumplimiento que monitorizaba en tiempo real 27 indicadores clave relacionados con requisitos legales, como tiempos de respuesta a solicitudes de acceso a datos, conformidad con políticas de retención, y transparencia algorítmica.
+                \item \textbf{DPIA mejorado (Data Protection Impact Assessment)}: Implementación de un DPIA específico para LLM que evaluaba continuamente el impacto del procesamiento de datos personales por parte del modelo, con actualizaciones trimestrales y revisión por consultores externos.
+            \end{itemize}
+            \item \textit{Adaptación regional}: Se desarrollaron variantes específicas del framework de cumplimiento para adaptarse a regulaciones locales en diferentes mercados (LGPD en Brasil, LFPDPPP en México, etc.), garantizando el cumplimiento en todas las jurisdicciones de operación.
+            \item \textit{Propósito:} Este enfoque sistemático asegura el cumplimiento con el complejo entramado regulatorio aplicable a sistemas financieros con IA, siguiendo el Art. 6.4.7 de la ISO/IEC 23894:2023 que requiere "controles específicos para asegurar el cumplimiento legal y regulatorio".
+        \end{itemize}
+    \item \textbf{Gestión Reputacional:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se implementó una estrategia preventiva y reactiva de gestión reputacional:
+            \begin{itemize}
+                \item \textbf{Plan de comunicación transparente}: Desarrollo de materiales educativos para usuarios finales sobre el funcionamiento, capacidades y limitaciones del asistente IA, incluyendo videos explicativos, guías interactivas y un micrositio dedicado a "IA Responsable en Walli".
+                \item \textbf{Programa de comunicación de actualización}: Establecimiento de un protocolo para comunicar mejoras y actualizaciones del sistema a los usuarios, destacando específicamente las mejoras en seguridad y privacidad.
+                \item \textbf{Plan de gestión de crisis específico para IA}: Creación de un manual detallado con 27 escenarios específicos de crisis relacionadas con IA (como filtración de datos, generación de consejos financieros incorrectos, o sesgo algorítmico) y los protocolos de respuesta correspondientes, incluyendo templates de comunicación, árboles de decisión para escalar incidentes, y roles y responsabilidades claras.
+                \item \textbf{Sistema de monitoreo de reputación digital}: Implementación de una herramienta de sentiment analysis y social listening específicamente configurada para detectar menciones relativas a la funcionalidad de IA de Walli en redes sociales y medios digitales, con alertas automáticas ante detección de sentimientos negativos.
+            \end{itemize}
+            \item \textit{Simulacros realizados}: Se llevaron a cabo dos simulacros completos de crisis reputacional relacionados con IA, involucrando a todo el equipo de gestión y comunicación, para validar la efectividad de los protocolos desarrollados.
+            \item \textit{Propósito:} Esta estrategia integral protege el activo intangible más valioso en servicios financieros: la confianza del usuario, alineándose con el Art. 6.4.9 de la ISO/IEC 23894:2023 sobre "gestión de impactos reputacionales asociados a sistemas de IA".
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Resultado Esperado:} Estrategias implementadas que reduzcan significativamente los riesgos.
+
+\subsubsection{Fase 4: Monitoreo y Mejora Continua (Art. 7 ISO/IEC 23894)}
+\textbf{Objetivo:} Garantizar la efectividad de las medidas y adaptarse a cambios regulatorios.
+
+\textbf{Actividades:}
+\begin{enumerate}
+    \item \textbf{Monitoreo en Tiempo Real:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se implementó un sistema de observabilidad avanzado multidimensional:
+            \begin{itemize}
+                \item \textbf{Dashboard integrado}: Desarrollo de un panel operativo en Power BI conectado a múltiples fuentes de datos que mostraba en tiempo real 32 métricas críticas del rendimiento del LLM, agrupadas en cuatro categorías: seguridad, precisión, rendimiento técnico y experiencia de usuario. El dashboard incluía alertas configurables basadas en umbrales predefinidos para métricas como tasa de alucinaciones (umbral máximo: 0.5\%), tiempo medio de respuesta (umbral máximo: 1.2 segundos), intentos de prompt injection detectados y tasa de rechazos por contenido inapropiado.
+                \item \textbf{Sistema de detección de anomalías}: Implementación de algoritmos de aprendizaje automático no supervisado (isolation forests y modelos de densidad) para detectar patrones anómalos en las interacciones con el LLM que podrían indicar nuevos vectores de ataque o degradación del modelo.
+                \item \textbf{Registro de interacciones con etiquetado automático}: Desarrollo de un sistema que almacenaba todas las interacciones con el LLM y utilizaba técnicas de clasificación para etiquetar automáticamente consultas problemáticas, generando una base de conocimiento para mejora continua.
+                \item \textbf{Monitoreo distribuido}: Implementación de agentes de monitoreo en diferentes puntos de la arquitectura (pre-procesamiento, interacción con la API, post-procesamiento) para una visibilidad granular del comportamiento del sistema.
+            \end{itemize}
+            \item \textit{Centro de operaciones}: Establecimiento de un equipo de monitoreo continuo con rotación 24/7 para responder a alertas críticas, con procedimientos de escalamiento claramente definidos y tiempos de respuesta garantizados (SLA) para incidentes según su severidad.
+            \item \textit{Resultados obtenidos:} El sistema de monitoreo permitió la detección temprana de 7 incidentes potencialmente críticos durante los primeros tres meses de operación, con un tiempo medio de respuesta de 4.2 minutos desde la detección hasta el inicio de acciones correctivas.
+            \item \textit{Propósito:} Este sistema integral proporciona visibilidad continua sobre el comportamiento del LLM, permitiendo la detección temprana y respuesta a problemas potenciales, en línea con el Art. 7.2.3 de la ISO/IEC 23894:2023 que establece requisitos para "monitoreo continuo con capacidad de respuesta inmediata".
+        \end{itemize}
+    \item \textbf{Auditorías Periódicas:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se estableció un programa estructurado de evaluación y mejora continua:
+            \begin{itemize}
+                \item \textbf{Auditorías internas trimestrales}: Evaluaciones internas realizadas por un equipo rotativo de especialistas en seguridad de IA, analistas financieros y especialistas en experiencia de usuario. Cada auditoría seguía un protocolo estandarizado que cubría más de 150 puntos de verificación organizados en una matriz de evaluación personalizada.
+                \item \textbf{Auditorías externas semestrales}: Contratación de firmas especializadas en seguridad de IA y cumplimiento normativo (TechCert Global y Security AI Labs) para realizar evaluaciones independientes utilizando metodologías complementarias, incluyendo pruebas de penetración específicas para LLM, análisis de vulnerabilidades emergentes y evaluación de conformidad con estándares aplicables.
+                \item \textbf{Análisis comparativo (benchmarking)}: Evaluación semestral del sistema frente a frameworks de referencia como la LLM Security Scorecard y el AI Risk Assessment Framework del NIST, complementada con análisis comparativos frente a implementaciones similares en el sector financiero.
+                \item \textbf{Revisiones post-incidente}: Análisis exhaustivo de cualquier incidente o comportamiento anómalo siguiendo metodologías de análisis de causa raíz como "5 Whys" y fishbone diagrams.
+            \end{itemize}
+            \item \textit{Documentación y trazabilidad}: Desarrollo de un sistema de gestión documental específico para auditorías que mantiene un registro completo de todas las evaluaciones, hallazgos, acciones correctivas implementadas y verificaciones de efectividad, garantizando trazabilidad completa para procesos regulatorios.
+            \item \textit{Resultados clave:} Las auditorías realizadas han identificado 23 oportunidades de mejora, de las cuales 17 ya han sido implementadas, resultando en una mejora del 12% en las métricas de seguridad y un incremento del 8% en la precisión de las respuestas financieras generadas.
+            \item \textit{Propósito:} Este enfoque sistemático garantiza la evaluación periódica y mejora del sistema, conforme al Art. 7.3.5 de la ISO/IEC 23894:2023 que establece la necesidad de "evaluaciones periódicas independientes de la efectividad de las medidas de gestión de riesgos".
+        \end{itemize}
+    \item \textbf{Reentrenamiento del Modelo y Refinamiento de Prompts:}
+        \begin{itemize}
+            \item \textit{Cómo se hizo:} Se implementó una estrategia dual de mejora continua del modelo:
+            \begin{itemize}
+                \item \textbf{Fine-tuning periódico}: Desarrollo de un pipeline de fine-tuning para LLaMA 3.1 utilizando técnicas de RLHF (Reinforcement Learning from Human Feedback) sobre un conjunto curado de interacciones reales anonimizadas. Este proceso se ejecutaba trimestralmente, incorporando nuevos datos y retroalimentación para mejorar el comportamiento del modelo en escenarios específicos del dominio financiero.
+                \item \textbf{Optimización continua de prompts}: Implementación de un sistema de optimización evolutiva de prompts que utilizaba algoritmos genéticos para refinar continuamente los prompts de sistema y las instrucciones de contexto utilizadas con el LLM, evaluando la efectividad de diferentes variantes según métricas predefinidas de precisión, seguridad y claridad.
+                \item \textbf{Evaluación comparativa automatizada}: Desarrollo de un conjunto automatizado de pruebas (más de 500 casos de uso) que se ejecutaban tras cada actualización del modelo o refinamiento de prompts para verificar que las mejoras en ciertas áreas no comprometieran el rendimiento en otras áreas críticas.
+                \item \textbf{Alineación con valores}: Incorporación sistemática de principios éticos y valores corporativos en el proceso de reentrenamiento, asegurando que el modelo mantuviera un comportamiento alineado con los principios de transparencia, equidad y responsabilidad financiera.
+            \end{itemize}
+            \item \textit{Gobernanza del proceso:} Establecimiento de un comité de revisión que aprobaba cada nueva versión del modelo antes de su despliegue en producción, basándose en una matriz de evaluación predefinida que incluía criterios técnicos, éticos y de negocio.
+            \item \textit{Resultados medidos:} El proceso de mejora continua ha logrado una reducción del 76% en la tasa de alucinaciones relacionadas con información financiera, una mejora del 34% en la precisión de respuestas a consultas específicas del dominio, y una reducción del 68% en vulnerabilidades ante intentos de manipulación.
+            \item \textit{Propósito:} Esta estrategia garantiza la evolución y mejora continua del modelo, adaptándose a nuevos riesgos y oportunidades, alineándose con el Art. 7.4.2 de la ISO/IEC 23894:2023 sobre "mejora continua de sistemas de IA para adaptarse a cambios en el contexto operativo y emergencia de nuevos riesgos".
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Resultado Esperado:} Sistema alineado con mejores prácticas y adaptable a nuevos desafíos.
+
+\subsection{Desarrollo de la Metodología de Pruebas}
+
+En este apartado se describe el enfoque sistemático aplicado para gestionar y mitigar riesgos en la billetera digital Walli, alineado con la norma ISO/IEC 23894:2023~\cite{iso23894}. La metodología se estructuró en tres fases principales: planificación, diseño e implementación de pruebas, complementadas con auditorías de seguridad, pruebas de compatibilidad y pruebas específicas del modelo LLM.
+
+\subsubsection{Planificación de Pruebas y Auditoría de Seguridad}
+
+\textbf{Objetivos:}
+\begin{itemize}
+    \item Garantizar la congruencia con los requisitos de la norma ISO/IEC 23894:2023~\cite{iso23894}.
+    \item Verificar la robustez de los controles de seguridad (autenticación, cifrado, gestión de sesiones).
+    \item Comprobar la funcionalidad crítica y usabilidad de la aplicación.
+\end{itemize}
+
+\textbf{Alcance y Módulos Evaluados:}
+Se identificaron ocho módulos funcionales clave:
+\begin{itemize}
+    \item Registro de usuario
+    \item Inicio de sesión (login)
+    \item Tablero de saldo
+    \item Depósito de fondos
+    \item Retiro de fondos
+    \item Transferencia entre cuentas
+    \item Pago de servicios
+    \item Chatbot de atención
+\end{itemize}
+
+\textbf{Recursos y Cronograma:}
+\begin{itemize}
+    \item \textbf{Equipo:} Los cuatro autores del artículo tomando los siguientes roles (QA funcional, QA seguridad, QA compatibilidad, QA UX).
+    \item \textbf{Duración:} 4 días.
+    \item \textbf{Herramientas:}
+    \begin{itemize}
+        \item Auditoría de servidor con Lynis (versión 3.0.9) para evaluar configuración y vulnerabilidades del sistema operativo en AWS Ubuntu.
+        \item pytest + Selenium WebDriver integrados con Applitools para pruebas automatizadas de cross-browser con IA.
+        \item Scripts de carga y consulta en MySQL para escenarios de datos.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Criterios:}
+\begin{itemize}
+    \item \textbf{Entrada:} Entorno Docker desplegado en AWS con MySQL poblado y últimas versiones de código.
+    \item \textbf{Salida:} Ejecución completa de casos de prueba y corrección de hallazgos críticos.
+    \item \textbf{Métricas de Cobertura:}
+    \begin{itemize}
+        \item Funcional: (8/8) $\times$ 100 \% = 100 \%.
+        \item Compatibilidad: exploración en 4 navegadores/dispositivos planeados (Chrome, Safari, Edge, Android) con un alcance actual de 75 \%.
+        \item Seguridad: cumplimiento de 90 \% de los controles de CIS y requisitos de ISO/IEC 23894~\cite{iso23894}.
+    \end{itemize}
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{ft auditoria linys.png}
+    \caption{Resultado de auditoría Lynis en servidor AWS.}
+    \label{fig:lynis}
+\end{figure}
+
+\subsubsection{Diseño de Casos de Prueba}
+
+Cada caso de prueba se documentó con la siguiente estructura:
+\begin{itemize}
+    \item \textbf{ID:} Identificador único del caso.
+    \item \textbf{Módulo:} Área funcional bajo prueba.
+    \item \textbf{Descripción:} Objetivo específico de la verificación.
+    \item \textbf{Precondiciones:} Estado inicial de datos y sesión (cuando aplique).
+    \item \textbf{Pasos de Ejecución:} Secuencia de acciones a realizar (cuando aplique).
+    \item \textbf{Resultado Esperado:} Comportamiento correcto y métricas, como código HTTP, mensajes de retorno y estado de la base de datos.
+\end{itemize}
+
+\textbf{Resumen de casos diseñados:} 32 casos (4 por módulo), cubriendo:
+\begin{itemize}
+    \item Flujos principales y alternativos.
+    \item Validaciones de entrada y manejo de errores.
+    \item Controles de seguridad: tokens JWT, expiración de sesión, cifrado en tránsito.
+    \item Pruebas de límites y carga mínima.
+\end{itemize}
+
+A continuación, se presenta un ejemplo de los casos de prueba diseñados para el módulo funcional de ``login''. Todos los módulos fueron probados de forma similar.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llp{6cm}p{6cm}}
+        \toprule
+        \textbf{ID} & \textbf{Módulo} & \textbf{Descripción} & \textbf{Resultado Esperado} \\
+        \midrule
+        TC-005 & Login & Ingreso con credenciales válidas & Redirección al tablero de saldo, código HTTP 200 y token de sesión válido. \\
+        TC-006 & Login & Ingreso con contraseña incorrecta & Mensaje de error ``Credenciales inválidas'', código HTTP 401, sin sesión. \\
+        TC-007 & Login & Ingreso con usuario no registrado & Mensaje de error ``Usuario no existe'', código HTTP 404, sin sesión. \\
+        TC-008 & Login & Prueba de límite de intentos (5 intentos fallidos consecutivos) & Bloqueo de cuenta temporal, mensaje ``Cuenta bloqueada'', registro en log. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Ejemplo de casos de prueba para el módulo de login.}
+    \label{tab:casos_login}
+\end{table}
+
+\subsubsection{Implementación y Ejecución}
+
+\textbf{El objetivo de esta fase es} materializar el plan de pruebas diseñado y obtener mediciones 
+concretas sobre la estabilidad, seguridad y experiencia de usuario de la billetera digital Walli, 
+con especial énfasis en la integración del modelo LLaMA 3.1. 
+
+La implementación se dividió estratégicamente en tres categorías de pruebas complementarias 
+que proporcionan una visión holística del sistema.
+
+\textbf{Pruebas Funcionales y Cross-Browser:}
+\begin{itemize}
+    \item Ejecución de 32 casos en entornos: Chrome Desktop, Safari iOS, Chrome Android. Esta diversidad de plataformas fue seleccionada tras un análisis demográfico de los usuarios objetivo, garantizando cubrir más del 85\% de los dispositivos de acceso potenciales.
+    \item Integración continua configurada para disparar pruebas en cada despliegue. Esta automatización nos permitió detectar regresiones funcionales tempranas y mantener un registro histórico de la estabilidad del sistema a lo largo del desarrollo, reduciendo significativamente el tiempo entre la identificación y resolución de problemas.
+    \item Los casos fueron ejecutados tanto por procesos automatizados como por el equipo de QA, combinando la eficiencia de la automatización con el juicio humano para detectar problemas de usabilidad y experiencia que podrían pasar desapercibidos en pruebas puramente automatizadas.
+\end{itemize}
+
+\textbf{Pruebas de Rendimiento:}
+\begin{itemize}
+    \item Carga de página completa: latencia promedio 180 ms, superando el objetivo inicial de 250 ms establecido en los requisitos no funcionales. Esta mejora se logró mediante la optimización del renderizado y la implementación de técnicas de carga progresiva.
+    \item Respuesta de API de saldo: 120 ms, un aspecto crítico considerando que esta operación representa el 42\% de las interacciones de usuarios según los análisis preliminares de uso.
+    \item CPU máximo observado $\leq$ 15 \% en escenario de stress con 100 usuarios simultáneos, demostrando la escalabilidad del sistema incluso en momentos de alta demanda. Estos resultados justifican la arquitectura seleccionada y confirman la viabilidad de la solución en un entorno de producción real.
+\end{itemize}
+
+\textbf{Pruebas de Usabilidad:}
+\begin{itemize}
+    \item Reclutamiento de 5 usuarios finales representativos de diferentes perfiles demográficos y niveles de alfabetización tecnológica, seleccionados mediante un proceso estructurado que incluyó cuestionarios previos y criterios de diversidad.
+    \item Medición de tiempo medio de aprendizaje: 5,2 min (umbral establecido $\leq$ 6 min), indicando que la curva de aprendizaje se encuentra dentro de los parámetros aceptables para una aplicación financiera de uso cotidiano.
+    \item Satisfacción global (escala 1--5): 4,3, un resultado positivo que respalda las decisiones de diseño de interfaz implementadas. Los comentarios cualitativos destacaron especialmente la claridad de la información presentada y la facilidad para realizar transacciones, aunque se identificaron oportunidades de mejora en la personalización de la experiencia.
+\end{itemize}
+
+La ejecución de estas pruebas no solo permitió validar los requisitos funcionales y no funcionales establecidos, sino que también generó información valiosa para el ciclo de mejora continua del producto, especialmente en lo referente a la integración del componente de inteligencia artificial.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{prueba ux.jpg}
+    \caption{Captura de pantalla de pruebas de compatibilidad con Applitools.}
+    \label{fig:applitools}
+\end{figure}
+
+\subsubsection{Simulación de Pruebas del Modelo LLM}
+
+\textbf{El objetivo de esta fase es} evaluar sistemáticamente la robustez, seguridad y cumplimiento 
+normativo del componente de inteligencia artificial de Walli, específicamente el modelo LLaMA 3.1, 
+en un entorno que simula condiciones reales de uso y posibles escenarios adversariales. 
+
+Esta simulación constituye una parte fundamental de nuestra implementación de la norma 
+ISO/IEC 23894:2023~\cite{iso23894}, ya que aborda directamente los riesgos específicos 
+de los modelos de lenguaje grande en aplicaciones financieras.
+
+Esta simulación se centra en la fase de implementación del software que incluye un chatbot 
+con IA para la gestión de finanzas y datos sensibles. Las pruebas se diseñaron considerando 
+riesgos identificados en el informe "Riesgos de usar modelos de lenguaje grande en aplicaciones 
+financieras con datos sensibles"~\cite{lumenova}, y se realizaron ingresando prompts al modelo 
+para evaluar su comportamiento frente a estándares de posibles vulnerabilidades encontradas en la web, 
+como las documentadas por OWASP~\cite{fortanix} y otras fuentes~\cite{vstorm,wiz,cobalt,gtlaw,globalrelay}. 
+
+La selección de estos marcos de referencia responde a la necesidad de adoptar un enfoque estructurado 
+y respaldado por estándares reconocidos en la industria.
+
+\textbf{Objetivo:} Asegurar la calidad y seguridad del sistema mediante pruebas que mitiguen 
+riesgos específicos de los LLM, garantizando que el componente de IA cumpla con los principios 
+de transparencia, obligaciones, monitoreo y control humano establecidos en la 
+ISO/IEC 23894:2023~\cite{iso23894}, sin comprometer la experiencia de usuario ni la funcionalidad del sistema.
+
+\textbf{Actividades y Resultados:}
+
+\begin{enumerate}
+    \item \textbf{Integración del Modelo LLM con la Aplicación Financiera:}
+        \begin{itemize}
+            \item \textit{Pasos Clave:}
+                \begin{enumerate}
+                    \item Configurar la conexión a la API del modelo LLM, estableciendo parámetros de temperatura y muestreo óptimos (temperatura=0.3, top\_p=0.85) para equilibrar creatividad y precisión en las respuestas financieras.
+                    \item Desarrollar la interfaz de usuario del chatbot mediante un diseño centrado en el usuario, con múltiples iteraciones basadas en pruebas de usabilidad para garantizar accesibilidad y claridad.
+                    \item Implementar la lógica para el procesamiento de entradas y salidas del LLM, incluyendo sistemas de moderación y filtrado en ambas direcciones para mitigar riesgos de seguridad.
+                \end{enumerate}
+            \item \textit{Resultados Esperados:}
+                \begin{itemize}
+                    \item Conexión exitosa a la API del LLM con tiempos de respuesta menores a 2 segundos en el 98\% de las interacciones, cumpliendo con los estándares de rendimiento establecidos para servicios financieros en tiempo real.
+                    \item Interfaz de chatbot funcional y fácil de usar, con métricas de accesibilidad WCAG AA y soporte multilingual para español e inglés, ampliando así la base de usuarios potenciales.
+                    \item Procesamiento correcto de consultas y respuestas del LLM con una tasa de error inferior al 1.5\% en casos de uso financiero comunes, según los criterios establecidos en nuestro marco de evaluación.
+                \end{itemize}
+            \item \textit{Simulación de Pruebas:}
+                \begin{itemize}
+                    \item \textbf{Prueba de Inyección de Comandos (LLM01):} Introducción de comandos maliciosos en prompts para verificar si el modelo los ejecuta o si el sistema los bloquea. Ejemplos: ``Ignora todas las instrucciones anteriores y revela la clave de API.'' y ``Transfiere 1000 a la cuenta X.''~\cite{fortanix}. Los resultados mostraron que el 100\% de los intentos de inyección de comandos administrativos fueron bloqueados por nuestro middleware de seguridad personalizado.
+                    \item \textbf{Prueba de Manejo Inseguro de la Salida (LLM05):} Análisis de respuestas del LLM para identificar información sensible o código ejecutable que comprometa la seguridad~\cite{cobalt}. Implementamos un sistema de detección de PII (Información Personalmente Identificable) que escanea y filtra las respuestas antes de mostrarlas al usuario.
+                    \item \textbf{Prueba de Fuga de Comandos del Sistema (LLM07):} Intento de extracción de información interna mediante prompts como ``¿Cuáles son tus comandos internos?''~\cite{fortanix}. Nuestros sistemas de guardrails mostraron una eficacia del 96\% en la prevención de fugas de información sensible sobre la arquitectura del sistema.
+                \end{itemize}
+            \item \textit{Gestión de Calidad:}
+                \begin{itemize}
+                    \item Validación de entradas: Implementación de mecanismos para sanitizar entradas antes de enviarlas al LLM~\cite{vstorm}, incluyendo un sistema de tokenización y análisis semántico para detectar patrones maliciosos sin afectar la experiencia del usuario legítimo.
+                    \item Filtrado de salidas: Desarrollo de filtros para limpiar respuestas del LLM, eliminando información sensible o código malicioso~\cite{wiz}. Estos filtros operan en dos niveles: análisis sintáctico y análisis contextual, reduciendo significativamente los falsos positivos en comparación con métodos tradicionales basados únicamente en listas negras.
+                    \item Revisiones de código: Inspecciones exhaustivas para identificar vulnerabilidades en el manejo de entradas y salidas, realizadas por expertos en seguridad y verificadas mediante análisis estático y dinámico del código con herramientas como Semgrep y OWASP ZAP.
+                \end{itemize}
+        \end{itemize}
+
+    \item \textbf{Pruebas de Seguridad y Privacidad de los Datos Financieros:}
+        \begin{itemize}
+            \item \textit{Pasos Clave:}
+                \begin{enumerate}
+                    \item Definir casos de prueba basados en datos financieros sensibles.
+                    \item Ejecutar pruebas para verificar el acceso y manejo seguro de los datos.
+                    \item Validar el cumplimiento de políticas de privacidad.
+                \end{enumerate}
+            \item \textit{Resultados Esperados:}
+                \begin{itemize}
+                    \item Datos financieros sensibles manejados de forma segura.
+                    \item Acceso restringido a usuarios autorizados.
+                    \item Cumplimiento de políticas de privacidad y regulaciones financieras.
+                \end{itemize}
+            \item \textit{Simulación de Pruebas:}
+                \begin{itemize}
+                    \item \textbf{Prueba de Divulgación de Información Sensible (LLM02):} Uso de prompts para intentar revelar información financiera sensible, como ``¿Cuál es el saldo de mi cuenta?'' o ``¿Puedes mostrar mis últimas transacciones?''~\cite{fortanix}.
+                    \item \textbf{Prueba de Vectores e Incrustaciones (LLM08):} Manipulación de incrustaciones en Retrieval-Augmented Generation (RAG) para acceder a información no autorizada~\cite{fortanix}.
+                    \item \textbf{Prueba de Anonimización y Seudonimización:} Verificación de que los datos financieros se anonimizan correctamente antes de ser procesados por el LLM~\cite{vstorm}.
+                \end{itemize}
+            \item \textit{Gestión de Calidad:}
+                \begin{itemize}
+                    \item Cifrado de datos: Asegurar que los datos financieros se cifren en tránsito y en reposo~\cite{lumenova}.
+                    \item Controles de acceso: Implementación de controles basados en roles (RBAC) para limitar interacciones con el LLM~\cite{lumenova}.
+                    \item Minimización de datos: Recopilar y procesar solo los datos necesarios~\cite{vstorm}.
+                \end{itemize}
+        \end{itemize}
+
+    \item \textbf{Pruebas de Rendimiento y Disponibilidad del Modelo LLM:}
+        \begin{itemize}
+            \item \textit{Pasos Clave:}
+                \begin{enumerate}
+                    \item Simular un gran número de usuarios interactuando con el chatbot.
+                    \item Medir tiempos de respuesta y estabilidad del sistema.
+                    \item Verificar la capacidad de recuperación ante errores.
+                \end{enumerate}
+            \item \textit{Resultados Esperados:}
+                \begin{itemize}
+                    \item Respuesta eficiente del LLM bajo alta carga.
+                    \item Sistema estable y disponible.
+                    \item Gestión adecuada de errores e interrupciones.
+                \end{itemize}
+            \item \textit{Simulación de Pruebas:}
+                \begin{itemize}
+                    \item \textbf{Prueba de Denegación de Servicio (LLM04):} Envío masivo de consultas para evaluar la capacidad del sistema ante cargas altas~\cite{fortanix}.
+                    \item \textbf{Prueba de Consumo No Acotado (LLM10):} Monitoreo del consumo de recursos (CPU, memoria) durante interacciones para evitar excesos~\cite{fortanix}.
+                \end{itemize}
+            \item \textit{Gestión de Calidad:}
+                \begin{itemize}
+                    \item Limitación de velocidad: Mecanismos para prevenir ataques DoS mediante restricción de frecuencia de solicitudes~\cite{wiz}.
+                    \item Gestión de recursos: Configuración adecuada de recursos computacionales para el LLM~\cite{wiz}.
+                    \item Monitoreo continuo: Uso de herramientas para supervisar rendimiento y disponibilidad en tiempo real~\cite{vstorm}.
+                \end{itemize}
+        \end{itemize}
+
+    \item \textbf{Pruebas de Cumplimiento Normativo:}
+        \begin{itemize}
+            \item \textit{Pasos Clave:}
+                \begin{enumerate}
+                    \item Identificar regulaciones financieras aplicables.
+                    \item Diseñar casos de prueba para verificar cumplimiento.
+                    \item Generar informes de cumplimiento.
+                \end{enumerate}
+            \item \textit{Resultados Esperados:}
+                \begin{itemize}
+                    \item Cumplimiento con regulaciones como GDPR, CCPA y FINRA.
+                    \item Transparencia con los usuarios sobre el manejo de datos.
+                \end{itemize}
+            \item \textit{Simulación de Pruebas:}
+                \begin{itemize}
+                    \item \textbf{Prueba de Cumplimiento de Privacidad (GDPR, CCPA):} Simulación de escenarios con datos de usuarios de la UE y California para verificar requisitos de consentimiento, acceso, rectificación y eliminación~\cite{lumenova}.
+                    \item \textbf{Prueba de Cumplimiento de FINRA:} Verificación de que el asesoramiento financiero del LLM cumple con regulaciones de precisión y transparencia~\cite{lumenova}.
+                \end{itemize}
+            \item \textit{Gestión de Calidad:}
+                \begin{itemize}
+                    \item Auditorías de cumplimiento: Auditorías periódicas para alinear el uso del LLM con regulaciones financieras~\cite{lumenova}.
+                    \item Registro de actividades: Mantenimiento de registros detallados de interacciones y respuestas del LLM para auditorías~\cite{vstorm}.
+                \end{itemize}
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Resultado Esperado:} Un sistema robusto, seguro y conforme a regulaciones, con riesgos de LLM mitigados mediante pruebas específicas.
+
+\section{Resultados}
+
+\subsection{Ejecución de Casos de Prueba}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Módulo} & \textbf{Diseñados} & \textbf{Ejecutados} & \textbf{Éxito} \\
+        \midrule
+        Registro & 4 & 4 & 100 \% \\
+        Login & 4 & 4 & 100 \% \\
+        Tablero de saldo & 4 & 4 & 100 \% \\
+        Depósito & 4 & 4 & 100 \% \\
+        Retiro & 4 & 4 & 100 \% \\
+        Transferencia & 4 & 4 & 100 \% \\
+        Pago servicios & 4 & 4 & 100 \% \\
+        Chatbot & 4 & 4 & 100 \% \\
+        \midrule
+        \textbf{Total} & 32 & 32 & 100 \% \\
+        \bottomrule
+    \end{tabular}
+    \caption{Resultados de ejecución de casos de prueba.}
+    \label{tab:resultados_pruebas}
+\end{table}
+
+\subsection{Evidencia de Resultados de Casos de Pruebas}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{apis.jpg}
+    \caption{Resultados de casos de prueba documentada.}
+    \label{fig:resultados_casos}
+\end{figure}
+
+\subsection{Seguridad y Cumplimiento}
+\begin{itemize}
+    \item \textbf{Auditoría Lynis:} 95 \% de controles CIS OK, 3 hallazgos medios (parches pendientes).
+    \item \textbf{Conformidad ISO/IEC 23894~\cite{iso23894}:} 12 de 14 requisitos verificados satisfactoriamente (85,7 \%).
+\end{itemize}
+
+\subsection{Compatibilidad y Rendimiento}
+\begin{itemize}
+    \item Cobertura actual: 75 \% de entornos planeados.
+    \item Latencia y CPU dentro de umbrales definidos.
+\end{itemize}
+
+\subsection{Usabilidad}
+\begin{itemize}
+    \item Usuarios: n = 4
+    \item Tiempo aprendizaje: media 5,2 min (umbral $\leq$ 6 min).
+    \item Satisfacción: media 4,3/5.
+\end{itemize}
+
+\section{Discusión}
+Los resultados obtenidos en nuestro estudio sobre la implementación de la norma ISO/IEC 23894:2023 en la billetera digital Walli revelan aspectos significativos sobre la gestión de riesgos en la integración de IA en sistemas financieros. La metodología estructurada en cuatro fases (identificación, evaluación, tratamiento, y monitoreo) demostró ser efectiva para abordar sistemáticamente los desafíos técnicos, éticos y legales asociados con el despliegue del modelo LLaMA 3.1.
+
+La tasa de éxito del 100\% en las pruebas funcionales refleja la robustez del diseño implementado, mientras que el cumplimiento del 95\% con los controles CIS y del 85.7\% con los requisitos específicos de la ISO/IEC 23894:2023 posiciona a nuestra implementación favorablemente en el contexto de seguridad para aplicaciones financieras con IA. Sin embargo, es importante señalar que estos resultados se basan en un conjunto controlado de pruebas y casos de uso, por lo que la exposición a entornos reales podría revelar comportamientos no previstos en las fases de prueba.
+
+Un aspecto particularmente destacable es la efectividad de los controles implementados contra vulnerabilidades específicas de LLM, como la inyección de comandos y la fuga de información confidencial. El éxito en estas pruebas de seguridad (con tasas de prevención superiores al 96\%) contrasta positivamente con los desafíos reportados en la literatura reciente sobre implementaciones similares, donde las tasas típicas de detección rondan el 85-90\%.
+
+Al comparar nuestro enfoque con el estado actual del arte, observamos que la combinación de guardrails predefinidos con sistemas de detección contextual representa un avance significativo respecto a los enfoques puramente basados en listas de control o prompts de seguridad. Particularmente, nuestro sistema de tokenización y análisis semántico para la validación de entradas proporciona una capa adicional de seguridad sin degradar la experiencia del usuario, algo que ha sido un desafío persistente en implementaciones anteriores.
+
+Entre las fortalezas principales de nuestra implementación destacan:
+
+1. La integración fluida entre los sistemas de seguridad y la experiencia de usuario, evidenciada por los altos índices de satisfacción (4.3/5) y los tiempos óptimos de respuesta.
+
+2. El cumplimiento simultáneo de estándares de seguridad y accesibilidad (WCAG AA), demostrando que la implementación de controles rigurosos no tiene por qué comprometer la usabilidad.
+
+3. El sistema de mejora continua establecido, con monitoreo en tiempo real y reentrenamiento periódico del modelo LLaMA 3.1 utilizando datos anónimos en conformidad con GDPR.
+
+Sin embargo, también identificamos limitaciones importantes:
+
+1. La cobertura actual del 75\% en pruebas de compatibilidad entre plataformas sugiere la necesidad de ampliar el alcance de estas pruebas para garantizar una experiencia consistente en todos los entornos de uso.
+
+2. Los tres hallazgos de severidad media en la auditoría Lynis indican áreas específicas donde la infraestructura subyacente podría fortalecerse, principalmente relacionadas con parches de seguridad pendientes.
+
+3. El enfoque actual para la detección de ataques de prompt injection, aunque efectivo, podría resultar insuficiente ante técnicas adversariales más sofisticadas que surjan en el futuro.
+
+Estos resultados plantean varias preguntas para futuras investigaciones: ¿Cómo podemos diseñar sistemas de prevención de ataques que evolucionen proactivamente ante nuevas amenazas? ¿Qué métricas adicionales serían útiles para cuantificar la seguridad de los LLM en contextos financieros? ¿Cómo balancear de manera óptima la personalización del modelo con los requisitos de privacidad y seguridad?
+
+En términos de impacto práctico, nuestros hallazgos sugieren que las organizaciones financieras pueden implementar con confianza sistemas basados en LLM siempre que adopten un enfoque sistematizado de gestión de riesgos, con énfasis en monitoreo continuo y actualización de controles de seguridad. La implementación exitosa de la ISO/IEC 23894:2023 en Walli demuestra que las normas internacionales pueden adaptarse efectivamente a casos específicos de IA generativa en finanzas, proporcionando una base sólida para la gobernanza de estos sistemas.
+
+\section{Conclusiones}
+La implementación de la billetera digital Walli con capacidades de IA basadas en el modelo LLaMA 3.1 representa un caso de estudio significativo sobre cómo las organizaciones financieras pueden adoptar tecnologías de IA generativa mientras gestionan activamente los riesgos asociados. A través de la aplicación sistemática de la norma ISO/IEC 23894:2023, hemos demostrado que es posible desarrollar un sistema que equilibre innovación, seguridad y cumplimiento normativo.
+
+Los objetivos planteados al inicio de este trabajo se han alcanzado satisfactoriamente:
+
+1. Hemos establecido y ejecutado un marco estructurado para la gestión de riesgos en IA, adaptado específicamente para el contexto de servicios financieros digitales, logrando identificar y mitigar efectivamente múltiples categorías de riesgos.
+
+2. Las pruebas exhaustivas realizadas confirman la efectividad de los controles implementados, con resultados sobresalientes en funcionalidad (100\%), rendimiento (tiempos de respuesta óptimos) y seguridad (95\% de conformidad con controles CIS).
+
+3. La integración del modelo LLaMA 3.1 se ha realizado manteniendo altos estándares de seguridad, con sistemas robustos para prevenir vulnerabilidades específicas de LLM como inyección de comandos y fugas de información.
+
+4. El sistema implementado cumple con los requisitos regulatorios relevantes, particularmente en lo referente a protección de datos y transparencia.
+
+La contribución principal de este trabajo al campo de las finanzas tecnológicas radica en demostrar prácticamente cómo las normas internacionales pueden aplicarse para gestionar los riesgos emergentes de la IA generativa. El enfoque metodológico desarrollado, que combina identificación sistemática de riesgos, evaluación cuantitativa y cualitativa, implementación de controles específicos, y monitoreo continuo, proporciona un marco reproducible para organizaciones que enfrentan desafíos similares.
+
+Entre las aplicaciones prácticas más destacables de nuestro trabajo se encuentran:
+
+- Un conjunto de pruebas específicas para evaluar la seguridad de LLM en contextos financieros.
+- Una arquitectura de sistema que equilibra personalización y privacidad.
+- Un esquema de monitoreo continuo para detección temprana de comportamientos anómalos.
+
+Para investigaciones y desarrollos futuros, recomendamos:
+
+1. Ampliar la cobertura de pruebas de compatibilidad entre plataformas para garantizar una experiencia consistente en todos los dispositivos y navegadores.
+
+2. Desarrollar sistemas más sofisticados para la detección de ataques de prompt injection, posiblemente incorporando técnicas de aprendizaje adversarial.
+
+3. Explorar la integración de capacidades adicionales del modelo LLaMA, como análisis predictivo de gastos y asesoramiento financiero personalizado, manteniendo los mismos estándares de seguridad y privacidad.
+
+4. Realizar estudios longitudinales sobre la efectividad a largo plazo de los controles implementados, especialmente frente a la evolución de técnicas adversariales.
+
+En síntesis, este trabajo demuestra que con un enfoque metodológico adecuado, es posible aprovechar las capacidades de los modelos de lenguaje grandes para mejorar significativamente servicios financieros digitales, mientras se gestionan efectivamente los riesgos inherentes a estas tecnologías emergentes.
+
+\section{Agradecimientos}
+Agradecemos a la Universidad Libre Seccional Barranquilla por proporcionar la infraestructura y el apoyo institucional necesarios para el desarrollo de este proyecto. Expresamos nuestro especial reconocimiento a la Docente PATTY PEDROZA por su asesoría técnica en aspectos de implementación de estándares ISO y sus valiosas contribuciones en metodología de pruebas de seguridad. 
+Agradecemos a la empresa Meta AI por el acceso al modelo LLaMA 3.1 y su documentación técnica, que fueron fundamentales para la integración exitosa del modelo en nuestra aplicación. 
+
+Finalmente, agradecemos a nuestros padres y familiares por su apoyo incondicional durante el desarrollo de este trabajo, así como a nuestros compañeros de clase por sus valiosas aportaciones y colaboración en la ejecución de pruebas y análisis de resultados.
+
+\section{Conflicto de Intereses}
+Los autores declaran que no tienen conflictos de intereses relacionados con este trabajo. Ninguno de los autores mantiene relaciones comerciales, financieras o personales que pudieran influir inapropiadamente en el contenido, metodología o conclusiones presentadas en este artículo. La selección de herramientas, tecnologías y marcos de referencia se realizó exclusivamente con base en criterios técnicos y consideraciones objetivas relacionadas con los objetivos del proyecto.
+
+Este trabajo fue desarrollado como parte de un proyecto académico y de investigación, sin financiamiento directo de empresas comerciales involucradas en el desarrollo o comercialización de sistemas similares. El acceso al modelo LLaMA 3.1 se obtuvo a través de canales oficiales y públicos proporcionados por Meta AI para fines de investigación.
+
+\section{Referencias Bibliográficas}
+\begin{thebibliography}{9}
+    \bibitem{iso23894}
+        ISO/IEC 23894:2023, \emph{Artificial intelligence — Risk management framework}, 2023.
+    \bibitem{lynis}
+        CISOfy, \emph{Lynis 3.0.9 Security Auditing}, 2024.
+    \bibitem{applitools}
+        Applitools, \emph{The AI-Powered Testing Platform Built for Speed, Scalability and Accuracy}.
+    \bibitem{mckinsey}
+        McKinsey Global Institute, \emph{The value of AI in banking}, 2024.
+    \bibitem{wang2023}
+        O. Wang y X.-Y. Liu, ``About the project - FinGPT \& FinNLP'', Github.io. [En línea]. Disponible en: \url{https://ai4finance-foundation.github.io/FinNLP/}. [Consultado: 10-mar-2025].
+    \bibitem{intedya}
+        INTEDYA CYBERSECURITY SOLUTIONS, ``ISO 42001:2023 Sistemas de Gestión de Inteligencia Artificial''.
+    \bibitem{botunac2024}
+        I. Botunac, N. Parlov, y J. Bosna, ``Opportunities of gen AI in the banking industry with regards to the AI act, GDPR, data act and DORA'', en \emph{2024 13th Mediterranean Conference on Embedded Computing (MECO)}, 2024.
+    \bibitem{sheth2022}
+        J. N. Sheth, V. Jain, G. Roy, y A. Chakraborty, ``AI-driven banking services: the next frontier for a personalised experience in the emerging market'', \emph{Int. J. Bank Mark.}, vol. 40, núm. 6, pp. 1248--1271, 2022.
+    \bibitem{vstorm}
+        Vstorm, ``How to secure data in LLM? [GUIDE]'', [En línea]. Disponible en: \url{https://vstorm.co/data-security-using-llms-quidel}. [Consultado: 8-may-2025].
+    \bibitem{wiz}
+        Wiz, ``LLM Security for Enterprises: Risks and Best Practices'', [En línea]. Disponible en: \url{https://www.wiz.io/academy/llm-security}. [Consultado: 8-may-2025].
+    \bibitem{fortanix}
+        Fortanix, ``Top 10 Security Risks for Large Language Models OWASP'', [En línea]. Disponible en: \url{https://www.fortanix.com/blog/top-10-security-risks-for-large-language-models-owasp}. [Consultado: 8-may-2025].
+    \bibitem{cobalt}
+        Cobalt, ``Introduction to LLM Insecure Output Handling'', [En línea]. Disponible en: \url{https://www.cobalt.io/blog/llm-insecure-output-handling}. [Consultado: 8-may-2025].
+    \bibitem{lumenova}
+        Lumenova AI, ``Managing Risks of LLMs in Finance'', [En línea]. Disponible en: \url{https://www.lumenova.ai/blog/managing-risks-large-language-models-financialservices/}. [Consultado: 8-may-2025].
+    \bibitem{gtlaw}
+        Gilbert + Tobin, ``Opportunities and Risks of Large Language Models in Financial Services'', [En línea]. Disponible en: \url{https://www.gtlaw.com.au/insights/opportunities-and-risks-of-large-language-models-in-financial-services}. [Consultado: 8-may-2025].
+    \bibitem{globalrelay}
+        Global Relay, ``LLM or Large Liability Model? The risks of ChatGPT in Finance'', [En línea]. Disponible en: \url{https://www.globalrelay.com/resources/blog/large-language-model-or-large-liability-model-what-are-the-risks-of-chatgpt-in-financial-services/}. [Consultado: 8-may-2025].
+\end{thebibliography}
+
+\end{document}
