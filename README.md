@@ -37,7 +37,13 @@ python run.py # Ejecuta la aplicación Flask
 ### 👥 Equipo
 
 - ```@Curcolor```
+- ```@JUNIORRDSR```
 - ```@DANN-MAGE```
+- ```@SaryNotfound```
+
+### Wiki del Repositorio
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Curcolor/WALLI_WALLET)
 
 ### 📄 Licencia
 
