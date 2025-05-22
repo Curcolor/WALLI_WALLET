@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Walli es una aplicación web que permite a los usuarios realizar transferencias, depósitos, retiros y pagos de servicios.
+WALLI WALLET es una aplicación de billetera digital basada en la web que brinda a los usuarios funciones bancarias esenciales en una interfaz segura y fácil de usar. La aplicación combina operaciones bancarias tradicionales con funciones modernas como un asistente financiero impulsado por IA para mejorar la experiencia del usuario.
 
 ### 🛠️ Tecnologías Utilizadas
 
